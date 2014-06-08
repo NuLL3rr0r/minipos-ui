@@ -55,7 +55,7 @@ Pool::StorageStruct *Pool::Storage()
 }
 
 #if defined(Q_OS_ANDROID)
-LinguaPlayer::Android *Pool::Android()
+MiniPos::Android *Pool::Android()
 {
     lock_guard<mutex> lock(Impl::AndroidMutex);
     (void)lock;
