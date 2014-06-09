@@ -73,6 +73,7 @@ android {
 
     OTHER_FILES += \
         deployment/android/AndroidManifest.xml \
+        deployment/android/libs/n38_1.jar \
         deployment/android/res/drawable-hdpi/icon.png \
         deployment/android/res/drawable-ldpi/icon.png \
         deployment/android/res/drawable-mdpi/icon.png \
