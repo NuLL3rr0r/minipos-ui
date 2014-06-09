@@ -44,7 +44,6 @@ public class Android extends org.qtproject.qt5.android.bindings.QtActivity
 
     public static boolean isInitialized()
     {
-        Log.v(TAG, "2222222222222");
         return m_instance != null ? true : false;
     }
 

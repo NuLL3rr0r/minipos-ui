@@ -24,6 +24,8 @@ struct Android::Impl
     void ExceptionClear();
 
     bool IsInterfaceInitialized();
+    void Initialize();
+    void Release();
 };
 
 Android::Android():
@@ -32,16 +34,14 @@ Android::Android():
     assert(QAndroidJniObject::isClassAvailable(JAVA_CLASS));
 
     if (!m_pimpl->IsInterfaceInitialized()) {
-        m_pimpl->AndroidJniObject->callMethod<void>(
-                    "<init>", "()V");
+        m_pimpl->Initialize();
     }
 }
 
 Android::~Android()
 {
     if (m_pimpl->IsInterfaceInitialized()) {
-        QAndroidJniObject::callStaticMethod<jboolean>(
-                    "release", "()Z");
+        m_pimpl->Release();
     }
 }
 
@@ -100,5 +100,17 @@ bool Android::Impl::IsInterfaceInitialized()
 {
     return QAndroidJniObject::callStaticMethod<jboolean>(
                 JAVA_CLASS, "isInitialized", "()Z");
+}
+
+void Android::Impl::Initialize()
+{
+    AndroidJniObject->callMethod<void>(
+                "<init>", "()V");
+}
+
+void Android::Impl::Release()
+{
+    QAndroidJniObject::callStaticMethod<jboolean>(
+                "release", "()Z");
 }
 
