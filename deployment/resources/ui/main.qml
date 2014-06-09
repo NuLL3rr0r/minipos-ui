@@ -17,8 +17,12 @@ ApplicationWindow {
         }
     }
 
-    Text {
-        text: qsTr("Hello World")
-        anchors.centerIn: parent
+    Button {
+        text: qsTr("Say Hello World!");
+        anchors.centerIn: parent;
+        onClicked: {
+            uiEngine.notify("mini POS", "Hello World!");
+            uiEngine.showToast("Hello World!");
+        }
     }
 }

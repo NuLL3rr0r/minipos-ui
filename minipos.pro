@@ -76,7 +76,8 @@ android {
         deployment/android/res/drawable-hdpi/icon.png \
         deployment/android/res/drawable-ldpi/icon.png \
         deployment/android/res/drawable-mdpi/icon.png \
-        deployment/android/res/values/strings.xml
+        deployment/android/res/values/strings.xml \
+        deployment/android/src/com/rahpooyanco/minipos/Android.java
 }
 
 

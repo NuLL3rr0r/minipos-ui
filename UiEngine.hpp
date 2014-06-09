@@ -27,6 +27,9 @@ signals:
 
 public slots:
 
+public:
+    Q_INVOKABLE bool notify(const QString &title, const QString &text, const int id = 0) const;
+    Q_INVOKABLE bool showToast(const QString &text, const int duration = 8000) const;
 };
 
 
