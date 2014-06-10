@@ -44,11 +44,15 @@ public class Android extends org.qtproject.qt5.android.bindings.QtActivity
 
     public static boolean isInitialized()
     {
+        Log.v(TAG, "isInitialized");
+
         return m_instance != null ? true : false;
     }
 
     public static boolean notify(final CharSequence title, final CharSequence text, final int id)
     {
+        Log.v(TAG, "notify");
+
         try {
             if (m_notificationManager == null) {
                 m_notificationManager = (NotificationManager)m_instance.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -71,6 +75,8 @@ public class Android extends org.qtproject.qt5.android.bindings.QtActivity
 
     public static boolean showToast(final CharSequence text, final int duration)
     {
+        Log.v(TAG, "showToast");
+
         try {
             m_instance.runOnUiThread(new Runnable() {
                 public void run() {
