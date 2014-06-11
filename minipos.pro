@@ -46,12 +46,14 @@ HEADERS += \
     Application.hpp \
     Database.hpp \
     Pool.hpp \
+    Pos.hpp \
     UiEngine.hpp
 SOURCES += \
     main.cpp \
     Application.cpp \
     Database.cpp \
     Pool.cpp \
+    Pos.cpp \
     UiEngine.cpp
 android {
     HEADERS += \

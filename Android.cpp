@@ -4,6 +4,7 @@
 #include <QtAndroidExtras/QAndroidJniObject>
 #include <QtAndroidExtras/QtAndroidExtras>
 #include <QtCore/QDebug>
+#include <QtCore/QString>
 #include "make_unique.hpp"
 #include "Android.hpp"
 
@@ -98,19 +99,25 @@ Android::Impl::~Impl() = default;
 
 bool Android::Impl::IsInterfaceInitialized()
 {
+    ExceptionClear();
+
     return QAndroidJniObject::callStaticMethod<jboolean>(
                 JAVA_CLASS, "isInitialized", "()Z");
 }
 
 void Android::Impl::Initialize()
 {
+    ExceptionClear();
+
     AndroidJniObject->callMethod<void>(
                 "<init>", "()V");
 }
 
 void Android::Impl::Release()
 {
+    ExceptionClear();
+
     QAndroidJniObject::callStaticMethod<jboolean>(
-                "release", "()Z");
+                JAVA_CLASS, "release", "()Z");
 }
 
