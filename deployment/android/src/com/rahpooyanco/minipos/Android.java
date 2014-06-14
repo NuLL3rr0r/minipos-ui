@@ -8,6 +8,10 @@ import android.util.Log;
 import android.widget.Toast;
 import java.lang.Exception;
 
+import cn.newpos.tech.api.dao.DeviceDao;
+import cn.newpos.tech.api.dao.EventListener.HeadSetStateListener;
+import cn.newpos.tech.api.dao.impl.DeviceImpl;
+
 public class Android extends org.qtproject.qt5.android.bindings.QtActivity
 {
     private static final String TAG = "[Android Interface / com.rahpooyanco.minipos.Android]";
@@ -16,6 +20,8 @@ public class Android extends org.qtproject.qt5.android.bindings.QtActivity
 
     private static NotificationManager m_notificationManager;
     private static Notification.Builder m_notificationBuilder;
+
+    private DeviceDao m_deviceDao;
 
     public Android()
     {
@@ -92,6 +98,35 @@ public class Android extends org.qtproject.qt5.android.bindings.QtActivity
         }
 
         return true;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+
+        m_deviceDao = new DeviceImpl(this);
+        m_deviceDao.getHeadSetStateListener(new HeadSetStateListener() {
+            @Override
+            public void getHeadSetState(int state) {
+                switch (state) {
+                case HeadSetStateListener.DEVICE_CHECKED:
+                    Log.v(TAG, "Device checked! " + state);
+                    break;
+                case HeadSetStateListener.DEVICE_IN:
+                    Log.v(TAG, "Device in! " + state);
+                    break;
+                case HeadSetStateListener.DEVICE_OUT:
+                    Log.v(TAG, "Device out! " + state);
+                    break;
+                case HeadSetStateListener.DEVICE_CHECKED_TIMEOUT:
+                    Log.v(TAG, "Device checked timeout! " + state);
+                    break;
+                default:
+                    break;
+                }
+            }
+        });
     }
 }
 
