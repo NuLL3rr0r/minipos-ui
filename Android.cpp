@@ -12,6 +12,17 @@
 
 using namespace MiniPos;
 
+JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *)
+{
+    JNIEnv *env;
+    if (vm->GetEnv(reinterpret_cast<void **>(&env), JNI_VERSION_1_6) != JNI_OK) {
+        qCritical() << "  * Could not get the JNI enviroument !!";
+        return -1;
+    }
+
+    return JNI_VERSION_1_6;
+}
+
 struct Android::Impl
 {
     typedef std::unique_ptr<QAndroidJniObject> QAndroidJniObject_t;
