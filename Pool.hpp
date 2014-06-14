@@ -10,8 +10,8 @@ namespace MiniPos {
 class Android;
 #endif /* defined(Q_OS_ANDROID) */
 class Database;
-class DatabaseTables;
 class Pool;
+class Pos;
 }
 
 class MiniPos::Pool
@@ -29,6 +29,7 @@ public:
     static MiniPos::Android *Android();
 #endif /* defined(Q_OS_ANDROID) */
     static MiniPos::Database *Database();
+    static MiniPos::Pos *Pos();
 };
 
 

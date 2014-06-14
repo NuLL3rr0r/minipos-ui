@@ -5,6 +5,7 @@
 #include "Android.hpp"
 #endif /* defined(Q_OS_ANDROID) */
 #include "Database.hpp"
+#include "Pos.hpp"
 
 using namespace std;
 using namespace MiniPos;
@@ -16,7 +17,7 @@ struct Pool::Impl
     typedef std::unique_ptr<MiniPos::Android> Android_t;
 #endif /* defined(Q_OS_ANDROID) */
     typedef std::unique_ptr<MiniPos::Database> Database_t;
-    typedef std::unique_ptr<MiniPos::DatabaseTables> DatabaseTables_t;
+    typedef std::unique_ptr<MiniPos::Pos> Pos_t;
 
     static std::mutex StorageMutex;
     static Storage_t StorageInstance;
@@ -28,6 +29,9 @@ struct Pool::Impl
 
     static std::mutex DatabaseMutex;
     static Database_t DatabaseInstance;
+
+    static std::mutex PosMutex;
+    static Pos_t PosInstance;
 };
 
 std::mutex Pool::Impl::StorageMutex;
@@ -40,6 +44,9 @@ Pool::Impl::Android_t Pool::Impl::AndroidInstance = nullptr;
 
 std::mutex Pool::Impl::DatabaseMutex;
 Pool::Impl::Database_t Pool::Impl::DatabaseInstance = nullptr;
+
+std::mutex Pool::Impl::PosMutex;
+Pool::Impl::Pos_t Pool::Impl::PosInstance = nullptr;
 
 Pool::StorageStruct *Pool::Storage()
 {
@@ -80,5 +87,18 @@ MiniPos::Database *Pool::Database()
     }
 
     return Impl::DatabaseInstance.get();
+}
+
+MiniPos::Pos *Pool::Pos()
+{
+    lock_guard<mutex> lock(Impl::PosMutex);
+    (void)lock;
+
+    if (Impl::PosInstance == nullptr) {
+        Impl::PosInstance =
+                std::make_unique<MiniPos::Pos>();
+    }
+
+    return Impl::PosInstance.get();
 }
 
