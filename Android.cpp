@@ -12,6 +12,17 @@
 
 using namespace MiniPos;
 
+Android::OnHeadSetStateChangedHandler_t OnHeadSetStateChangedHandler;
+
+static void onHeadSetStateChanged(JNIEnv *, jobject, int state)
+{
+    OnHeadSetStateChangedHandler(state);
+}
+
+static JNINativeMethod s_nativeMethods[] = {
+    {"onHeadSetStateChanged", "(I)V", (void *)onHeadSetStateChanged}
+};
+
 JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *)
 {
     JNIEnv *env;
@@ -20,46 +31,84 @@ JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *)
         return -1;
     }
 
+    jclass clazz = env->FindClass(JAVA_CLASS);
+    if (!clazz) {
+        qCritical()<<"  * Could not find the Android interface class !!";
+        return -1;
+    }
+
+    if (env->RegisterNatives(
+                clazz,
+                s_nativeMethods,
+                sizeof(s_nativeMethods) / sizeof(s_nativeMethods[0])
+                ) < 0) {
+        qCritical()<<"   * Failed to Register native methods !!";
+        return -1;
+    }
+
     return JNI_VERSION_1_6;
 }
 
 struct Android::Impl
 {
-    typedef std::unique_ptr<QAndroidJniObject> QAndroidJniObject_t;
-
-    QAndroidJniObject_t AndroidJniObject;
-
-    Impl();
-    ~Impl();
-
-    bool ExceptionCheck();
-    void ExceptionClear();
-
-    bool IsInterfaceInitialized();
-    void Initialize();
-    void Release();
+    QAndroidJniEnvironment AndroidJniEnvironment;
 };
 
-Android::Android():
+Android::Android() :
     m_pimpl(std::make_unique<Android::Impl>())
 {
-    assert(QAndroidJniObject::isClassAvailable(JAVA_CLASS));
 
-    if (!m_pimpl->IsInterfaceInitialized()) {
-        m_pimpl->Initialize();
-    }
 }
 
-Android::~Android()
+Android::~Android() = default;
+
+bool Android::ExceptionCheck()
 {
-    if (m_pimpl->IsInterfaceInitialized()) {
-        m_pimpl->Release();
+    return m_pimpl->AndroidJniEnvironment->ExceptionCheck();
+}
+
+void Android::OnHeadSetStateChanged(OnHeadSetStateChangedHandler_t handler)
+{
+    OnHeadSetStateChangedHandler = handler;
+}
+
+void Android::ExceptionClear()
+{
+    if (m_pimpl->AndroidJniEnvironment->ExceptionCheck()) {
+        m_pimpl->AndroidJniEnvironment->ExceptionClear();
     }
 }
+
+void Android::Initialize()
+{
+    if (!IsInitialized()) {
+        ExceptionClear();
+
+        this->callMethod<void>(
+                    "<init>", "()V");
+    }
+}
+
+void Android::Release()
+{
+    ExceptionClear();
+
+    QAndroidJniObject::callStaticMethod<jboolean>(
+                JAVA_CLASS, "release", "()Z");
+}
+
+bool Android::IsInitialized()
+{
+    ExceptionClear();
+
+    return QAndroidJniObject::callStaticMethod<jboolean>(
+                JAVA_CLASS, "isInitialized", "()Z");
+}
+
 
 bool Android::Notify(const QString &title, const QString &text, const int id)
 {
-    m_pimpl->ExceptionClear();
+    ExceptionClear();
 
     jboolean ret = QAndroidJniObject::callStaticMethod<jboolean>(
                 JAVA_CLASS,
@@ -74,7 +123,7 @@ bool Android::Notify(const QString &title, const QString &text, const int id)
 
 bool Android::ShowToast(const QString &text, const int duration)
 {
-    m_pimpl->ExceptionClear();
+    ExceptionClear();
 
     jboolean ret = QAndroidJniObject::callStaticMethod<jboolean>(
                 JAVA_CLASS,
@@ -84,51 +133,5 @@ bool Android::ShowToast(const QString &text, const int duration)
                 duration);
 
     return ret;
-}
-
-bool Android::Impl::ExceptionCheck()
-{
-    QAndroidJniEnvironment env;
-    return env->ExceptionCheck();
-}
-
-void Android::Impl::ExceptionClear()
-{
-    QAndroidJniEnvironment env;
-    if (env->ExceptionCheck()) {
-        env->ExceptionClear();
-    }
-}
-
-Android::Impl::Impl() :
-    AndroidJniObject(std::make_unique<QAndroidJniObject>(JAVA_CLASS))
-{
-
-}
-
-Android::Impl::~Impl() = default;
-
-bool Android::Impl::IsInterfaceInitialized()
-{
-    ExceptionClear();
-
-    return QAndroidJniObject::callStaticMethod<jboolean>(
-                JAVA_CLASS, "isInitialized", "()Z");
-}
-
-void Android::Impl::Initialize()
-{
-    ExceptionClear();
-
-    AndroidJniObject->callMethod<void>(
-                "<init>", "()V");
-}
-
-void Android::Impl::Release()
-{
-    ExceptionClear();
-
-    QAndroidJniObject::callStaticMethod<jboolean>(
-                JAVA_CLASS, "release", "()Z");
 }
 

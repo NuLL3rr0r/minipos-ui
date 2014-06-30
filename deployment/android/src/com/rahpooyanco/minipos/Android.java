@@ -16,25 +16,20 @@ public class Android extends org.qtproject.qt5.android.bindings.QtActivity
 {
     private static final String TAG = "[Android Interface / com.rahpooyanco.minipos.Android]";
 
-    private static Android m_instance;
+    private static Android s_instance;
 
     private static NotificationManager m_notificationManager;
     private static Notification.Builder m_notificationBuilder;
 
     private DeviceDao m_deviceDao;
 
-    public Android()
-    {
-        m_instance = this;
-
-        Log.v(TAG, "Android interface successfully initialized!");
-    }
+    public static native void onHeadSetStateChanged(int state);
 
     public static boolean release()
     {
         try {
-            if (m_instance != null) {
-                m_instance = null;
+            if (s_instance != null) {
+                s_instance = null;
 
                 Log.v(TAG, "Android interface successfully released!");
             }
@@ -52,7 +47,7 @@ public class Android extends org.qtproject.qt5.android.bindings.QtActivity
     {
         Log.v(TAG, "isInitialized");
 
-        return m_instance != null ? true : false;
+        return s_instance != null ? true : false;
     }
 
     public static boolean notify(final CharSequence title, final CharSequence text, final int id)
@@ -61,8 +56,8 @@ public class Android extends org.qtproject.qt5.android.bindings.QtActivity
 
         try {
             if (m_notificationManager == null) {
-                m_notificationManager = (NotificationManager)m_instance.getSystemService(Context.NOTIFICATION_SERVICE);
-                m_notificationBuilder = new Notification.Builder(m_instance);
+                m_notificationManager = (NotificationManager)s_instance.getSystemService(Context.NOTIFICATION_SERVICE);
+                m_notificationBuilder = new Notification.Builder(s_instance);
                 m_notificationBuilder.setSmallIcon(R.drawable.icon);
             }
 
@@ -84,9 +79,9 @@ public class Android extends org.qtproject.qt5.android.bindings.QtActivity
         Log.v(TAG, "showToast");
 
         try {
-            m_instance.runOnUiThread(new Runnable() {
+            s_instance.runOnUiThread(new Runnable() {
                 public void run() {
-                    Toast toast = Toast.makeText(m_instance, text, duration);
+                    Toast toast = Toast.makeText(s_instance, text, duration);
                     toast.show();
                 }
             });
@@ -100,6 +95,13 @@ public class Android extends org.qtproject.qt5.android.bindings.QtActivity
         return true;
     }
 
+    public Android()
+    {
+        s_instance = this;
+
+        Log.v(TAG, "Android interface successfully initialized!");
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -109,22 +111,7 @@ public class Android extends org.qtproject.qt5.android.bindings.QtActivity
         m_deviceDao.getHeadSetStateListener(new HeadSetStateListener() {
             @Override
             public void getHeadSetState(int state) {
-                switch (state) {
-                case HeadSetStateListener.DEVICE_CHECKED:
-                    Log.v(TAG, "Device checked! " + state);
-                    break;
-                case HeadSetStateListener.DEVICE_IN:
-                    Log.v(TAG, "Device in! " + state);
-                    break;
-                case HeadSetStateListener.DEVICE_OUT:
-                    Log.v(TAG, "Device out! " + state);
-                    break;
-                case HeadSetStateListener.DEVICE_CHECKED_TIMEOUT:
-                    Log.v(TAG, "Device checked timeout! " + state);
-                    break;
-                default:
-                    break;
-                }
+                onHeadSetStateChanged(state);
             }
         });
     }

@@ -10,6 +10,7 @@ using namespace MiniPos;
 
 struct UiEngine::Impl
 {
+
 };
 
 UiEngine::UiEngine(QObject *parent) :
@@ -21,13 +22,13 @@ UiEngine::UiEngine(QObject *parent) :
 UiEngine::UiEngine(const QUrl &url, QObject *parent) :
     QQmlApplicationEngine(url, parent)
 {
-
+    this->rootContext()->setContextProperty("uiEngine", this);
 }
 
 UiEngine::UiEngine(const QString &filePath, QObject *parent) :
     QQmlApplicationEngine(filePath, parent)
 {
-
+    this->rootContext()->setContextProperty("uiEngine", this);
 }
 
 UiEngine::~UiEngine() = default;
