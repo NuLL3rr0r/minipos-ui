@@ -3,7 +3,7 @@
 #include "uiengine.hpp"
 #if defined(Q_OS_ANDROID)
 #include "Android.hpp"
-#endif /* defined(Q_OS_ANDROID) */
+#endif // defined(Q_OS_ANDROID)
 #include "Pool.hpp"
 
 using namespace MiniPos;
@@ -41,7 +41,7 @@ bool UiEngine::notify(const QString &title, const QString &text, const int id) c
     qWarning() << "Notification is not implemented on this platform";
     qDebug() << title << text << id;
     return true;
-#endif /* defined(Q_OS_ANDROID) */
+#endif // defined(Q_OS_ANDROID)
 }
 
 bool UiEngine::showToast(const QString &text, const int duration) const
@@ -52,6 +52,6 @@ bool UiEngine::showToast(const QString &text, const int duration) const
     qWarning() << "Toast is not implemented on this platform";
     qDebug() << text << duration;
     return true;
-#endif /* defined(Q_OS_ANDROID) */
+#endif // defined(Q_OS_ANDROID)
 }
 

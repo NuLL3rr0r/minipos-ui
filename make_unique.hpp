@@ -13,5 +13,5 @@ std::unique_ptr<T> make_unique(Args&& ...args)
 }
 
 
-#endif // MAKE_UNIQUE_HPP
+#endif /* MAKE_UNIQUE_HPP */
 

@@ -42,4 +42,4 @@ public:
 };
 
 
-#endif // MINIPOS_ANDROIDOBJECT_HPP
+#endif /* MINIPOS_ANDROIDOBJECT_HPP */

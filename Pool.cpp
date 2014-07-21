@@ -3,7 +3,7 @@
 #include "Pool.hpp"
 #if defined(Q_OS_ANDROID)
 #include "Android.hpp"
-#endif /* defined(Q_OS_ANDROID) */
+#endif // defined(Q_OS_ANDROID)
 #include "Database.hpp"
 #include "Pos.hpp"
 
@@ -15,7 +15,7 @@ struct Pool::Impl
     typedef std::unique_ptr<Pool::StorageStruct> Storage_t;
 #if defined(Q_OS_ANDROID)
     typedef std::unique_ptr<MiniPos::Android> Android_t;
-#endif /* defined(Q_OS_ANDROID) */
+#endif // defined(Q_OS_ANDROID)
     typedef std::unique_ptr<MiniPos::Database> Database_t;
     typedef std::unique_ptr<MiniPos::Pos> Pos_t;
 
@@ -25,7 +25,7 @@ struct Pool::Impl
 #if defined(Q_OS_ANDROID)
     static std::mutex AndroidMutex;
     static Android_t AndroidInstance;
-#endif /* defined(Q_OS_ANDROID) */
+#endif // defined(Q_OS_ANDROID)
 
     static std::mutex DatabaseMutex;
     static Database_t DatabaseInstance;
@@ -40,7 +40,7 @@ Pool::Impl::Storage_t Pool::Impl::StorageInstance = nullptr;
 #if defined(Q_OS_ANDROID)
 std::mutex Pool::Impl::AndroidMutex;
 Pool::Impl::Android_t Pool::Impl::AndroidInstance = nullptr;
-#endif /* defined(Q_OS_ANDROID) */
+#endif // defined(Q_OS_ANDROID)
 
 std::mutex Pool::Impl::DatabaseMutex;
 Pool::Impl::Database_t Pool::Impl::DatabaseInstance = nullptr;

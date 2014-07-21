@@ -3,7 +3,7 @@
 #include <QObject>          // This is necessary for typedef Q_OS_ANDROID.
 #if defined(Q_OS_ANDROID)
 #include "Android.hpp"
-#endif /* defined(Q_OS_ANDROID) */
+#endif // defined(Q_OS_ANDROID)
 
 #include "Pool.hpp"
 
@@ -44,6 +44,6 @@ void Pos::Impl::InitializeEvents()
                           this,
                           std::placeholders::_1)
                 );
-#endif /* defined(Q_OS_ANDROID) */
+#endif // defined(Q_OS_ANDROID)
 }
 

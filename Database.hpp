@@ -23,7 +23,7 @@ private:
 public:
 #if defined(STATIC_LINK_DEPENDENCIES)
     static void LoadSQLite3Driver();
-#endif  /* defined(STATIC_LINK_DEPENDENCIES) */
+#endif  // defined(STATIC_LINK_DEPENDENCIES)
 
     static bool Vacuum(const std::string &databaseFile);
 

@@ -8,7 +8,7 @@
 namespace MiniPos {
 #if defined(Q_OS_ANDROID)
 class Android;
-#endif /* defined(Q_OS_ANDROID) */
+#endif // defined(Q_OS_ANDROID)
 class Pos;
 }
 
@@ -39,4 +39,4 @@ public:
 };
 
 
-#endif // MINIPOS_POS_HPP
+#endif /* MINIPOS_POS_HPP */

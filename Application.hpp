@@ -29,4 +29,4 @@ public:
     void SetupUi();
 };
 
-#endif // APPLICATION_HPP
+#endif /* APPLICATION_HPP */

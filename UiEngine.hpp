@@ -33,5 +33,5 @@ public:
 };
 
 
-#endif // MINIPOS_UIENGINE_HPP
+#endif /* MINIPOS_UIENGINE_HPP */
 

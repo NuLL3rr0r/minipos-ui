@@ -8,7 +8,7 @@
 namespace MiniPos {
 #if defined(Q_OS_ANDROID)
 class Android;
-#endif /* defined(Q_OS_ANDROID) */
+#endif // defined(Q_OS_ANDROID)
 class Database;
 class Pool;
 class Pos;
@@ -27,7 +27,7 @@ public:
     static StorageStruct *Storage();
 #if defined(Q_OS_ANDROID)
     static MiniPos::Android *Android();
-#endif /* defined(Q_OS_ANDROID) */
+#endif // defined(Q_OS_ANDROID)
     static MiniPos::Database *Database();
     static MiniPos::Pos *Pos();
 };

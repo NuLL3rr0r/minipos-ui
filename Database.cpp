@@ -17,7 +17,7 @@ struct Database::Impl
 
 #if defined(STATIC_LINK_DEPENDENCIES)
     static bool IsSQLite3DriverLoaded;
-#endif  /* defined(STATIC_LINK_DEPENDENCIES) */
+#endif  // defined(STATIC_LINK_DEPENDENCIES)
 
     cppdb::session Sql;
 
@@ -27,13 +27,13 @@ struct Database::Impl
 
 #if defined(STATIC_LINK_DEPENDENCIES)
 bool Database::Impl::IsSQLite3DriverLoaded = false;
-#endif  /* defined(STATIC_LINK_DEPENDENCIES) */
+#endif  // defined(STATIC_LINK_DEPENDENCIES)/
 
 #if defined(STATIC_LINK_DEPENDENCIES)
 extern "C" {
 cppdb::backend::connection *cppdb_sqlite3_get_connection(cppdb::connection_info const &);
 }
-#endif  /* defined(STATIC_LINK_DEPENDENCIES) */
+#endif  // defined(STATIC_LINK_DEPENDENCIES)/
 
 #if defined(STATIC_LINK_DEPENDENCIES)
 void Database::LoadSQLite3Driver()
@@ -45,7 +45,7 @@ void Database::LoadSQLite3Driver()
                                 new cppdb::backend::static_driver(cppdb_sqlite3_get_connection));
     }
 }
-#endif  /* defined(STATIC_LINK_DEPENDENCIES) */
+#endif  // defined(STATIC_LINK_DEPENDENCIES)
 
 bool Database::Vacuum(const std::string &databaseFile)
 {
