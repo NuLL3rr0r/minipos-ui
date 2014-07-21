@@ -1,9 +1,10 @@
 #include "Pos.hpp"
 #include "make_unique.hpp"
+#include <QObject>          // This is necessary for typedef Q_OS_ANDROID.
 #if defined(Q_OS_ANDROID)
 #include "Android.hpp"
 #endif /* defined(Q_OS_ANDROID) */
-#include "Android.hpp"
+
 #include "Pool.hpp"
 
 using namespace MiniPos;
@@ -12,7 +13,7 @@ struct Pos::Impl
 {
     Pos::HeadSetStateChangedSignal_t HeadSetStateChangedSignal;
 
-    void OnHeadSetStateChanged(HeadSetState state);
+    void OnHeadSetStateChanged(int state);
 
     void InitializeEvents();
 };
@@ -30,9 +31,9 @@ Pos::HeadSetStateChangedSignal_t &Pos::HeadSetStateChanged()
     return m_pimpl->HeadSetStateChangedSignal;
 }
 
-void Pos::Impl::OnHeadSetStateChanged(HeadSetState state)
+void Pos::Impl::OnHeadSetStateChanged(int state)
 {
-    Pool::Pos()->HeadSetStateChanged()(state);
+    Pool::Pos()->HeadSetStateChanged()(static_cast<HeadSetState>(state));
 }
 
 void Pos::Impl::InitializeEvents()
@@ -41,7 +42,8 @@ void Pos::Impl::InitializeEvents()
     Pool::Android()->OnHeadSetStateChanged(
                 std::bind(&Pos::Impl::OnHeadSetStateChanged,
                           this,
-                          std::placeholders::_1));
+                          std::placeholders::_1)
+                );
 #endif /* defined(Q_OS_ANDROID) */
 }
 
