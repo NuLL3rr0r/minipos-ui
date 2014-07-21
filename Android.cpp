@@ -16,7 +16,8 @@ Android::OnHeadSetStateChangedHandler_t OnHeadSetStateChangedHandler;
 
 static void onHeadSetStateChanged(JNIEnv *, jobject, int state)
 {
-    OnHeadSetStateChangedHandler(state);
+    if (OnHeadSetStateChangedHandler)
+        OnHeadSetStateChangedHandler(state);
 }
 
 static JNINativeMethod s_nativeMethods[] = {
