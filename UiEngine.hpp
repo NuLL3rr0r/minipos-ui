@@ -3,7 +3,7 @@
 
 
 #include <memory>
-#include <QQmlApplicationEngine>
+#include <QtQml/QQmlApplicationEngine>
 
 namespace MiniPos {
 class UiEngine;

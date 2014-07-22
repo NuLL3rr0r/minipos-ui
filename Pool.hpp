@@ -2,7 +2,7 @@
 #define MINIPOS_POOL_HPP
 
 
-#include <QObject>
+#include <QtCore/QObject>
 #include <memory>
 
 namespace MiniPos {

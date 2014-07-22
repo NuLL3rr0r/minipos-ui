@@ -3,7 +3,7 @@
 
 
 #include <memory>
-#include <QApplication>
+#include <QtWidgets/QApplication>
 
 namespace MiniPos {
 class Application;

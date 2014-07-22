@@ -5,7 +5,7 @@
 #include <functional>
 #include <string>
 #include <jni.h>
-#include <QAndroidJniObject>
+#include <QtAndroidExtras/QAndroidJniObject>
 
 namespace MiniPos {
 class Android;

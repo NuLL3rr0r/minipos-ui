@@ -1,5 +1,9 @@
-#include <QDebug>
-#include <QQmlContext>
+#include <QtCore/QDebug>
+#include <QtQml/QQmlContext>
+#include <QtWidgets/QSystemTrayIcon>
+#if !defined(Q_OS_ANDROID)
+#include <windows.h>
+#endif // !defined(Q_OS_ANDROID)
 #include "make_unique.hpp"
 #include "uiengine.hpp"
 #if defined(Q_OS_ANDROID)
@@ -12,11 +16,22 @@ using namespace MiniPos;
 
 struct UiEngine::Impl
 {
+public:
+#if !defined(Q_OS_ANDROID)
+    typedef std::unique_ptr<QSystemTrayIcon> QSystemTrayIcon_t;
+#endif // defined(Q_OS_ANDROID)
+
 private:
-   UiEngine *m_parent;
+    UiEngine *m_parent;
 
 public:
-   Impl(UiEngine *parent);
+#if !defined(Q_OS_ANDROID)
+    QSystemTrayIcon_t Tray;
+#endif // !defined(Q_OS_ANDROID)
+
+public:
+    Impl(UiEngine *parent);
+    ~Impl();
 
 public:
     void OnHeadSetStateChanged(const Pos::HeadSetState &state);
@@ -58,8 +73,16 @@ bool UiEngine::notify(const QString &title, const QString &text, const int id) c
 #if defined(Q_OS_ANDROID)
     return Pool::Android()->Notify(title, text, id);
 #else
-    qWarning() << "Notification is not implemented on this platform";
-    qDebug() << title << text << id;
+    QSystemTrayIcon *tray = new QSystemTrayIcon();
+    if (m_pimpl->Tray->isSystemTrayAvailable() || m_pimpl->Tray->supportsMessages()) {
+        (void)id;
+        m_pimpl->Tray->setVisible(true);
+        m_pimpl->Tray->show();
+        m_pimpl->Tray->showMessage(title, text);
+    } else {
+        qWarning() << "Notification has not been implemented on this platform, yet!";
+        qDebug() << title << text << id;
+    }
     return true;
 #endif // defined(Q_OS_ANDROID)
 }
@@ -68,8 +91,12 @@ bool UiEngine::showToast(const QString &text, const int duration) const
 {
 #if defined(Q_OS_ANDROID)
     return Pool::Android()->ShowToast(text, duration);
+#elif defined ( _WIN32 )
+    (void)duration;
+    MessageBoxW(0, text.toStdWString().c_str(), L"miniPOS", MB_OK);
+    return true;
 #else
-    qWarning() << "Toast is not implemented on this platform";
+    qWarning() << "Toast has not been implemented on this platform, yet!";
     qDebug() << text << duration;
     return true;
 #endif // defined(Q_OS_ANDROID)
@@ -77,8 +104,22 @@ bool UiEngine::showToast(const QString &text, const int duration) const
 
 UiEngine::Impl::Impl(UiEngine *parent) :
     m_parent(parent)
+  #if !defined(Q_OS_ANDROID)
+  ,
+    Tray(std::make_unique<QSystemTrayIcon>())
+  #endif // defined(Q_OS_ANDROID)
 {
+#if !defined(Q_OS_ANDROID)
+    Tray->setIcon(QIcon::fromTheme(""));
+#endif // !defined(Q_OS_ANDROID)
+}
 
+UiEngine::Impl::~Impl()
+{
+#if !defined(Q_OS_ANDROID)
+    Tray->setVisible(false);
+    Tray->hide();
+#endif // !defined(Q_OS_ANDROID)
 }
 
 void UiEngine::Impl::OnHeadSetStateChanged(const Pos::HeadSetState &state)
