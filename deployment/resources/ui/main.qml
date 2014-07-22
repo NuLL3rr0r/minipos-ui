@@ -1,10 +1,13 @@
-import QtQuick 2.2
-import QtQuick.Controls 1.1
+import QtQuick 2.2;
+import QtQuick.Controls 1.1;
+import "com/rahpooyanco/minipos";
 
 ApplicationWindow {
-    visible: true
-    width: 640
-    height: 480
+    id: applicationWindow;
+    objectName: "applicationWindow";
+    visible: true;
+    width: 640;
+    height: 480;
     title: qsTr("Hello World")
 
     menuBar: MenuBar {
@@ -24,5 +27,19 @@ ApplicationWindow {
             uiEngine.notify("mini POS", "Hello World!");
             uiEngine.showToast("Hello World!");
         }
+    }
+
+    Toast {
+        id: toast;
+        anchors.fill: parent;
+        anchors.centerIn: parent;
+        fontPath: FontPath;
+    }
+
+    function showToast(text, duration) {
+        console.log(text);
+        toast.timoutInterval = duration;
+        toast.notificationText = "";
+        toast.notificationText = text;
     }
 }

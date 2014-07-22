@@ -1,4 +1,5 @@
 #include <QtCore/QDebug>
+#include <QtCore/QVariant>
 #include <QtQml/QQmlContext>
 #include <QtWidgets/QSystemTrayIcon>
 #if !defined(Q_OS_ANDROID)
@@ -11,6 +12,10 @@
 #endif // defined(Q_OS_ANDROID)
 #include "Pool.hpp"
 #include "Pos.hpp"
+
+
+#include <QQuickWindow>
+
 
 using namespace MiniPos;
 
@@ -36,6 +41,7 @@ public:
 public:
     void OnHeadSetStateChanged(const Pos::HeadSetState &state);
 
+    void Initialize();
     void InitializeEvents();
 };
 
@@ -43,27 +49,21 @@ UiEngine::UiEngine(QObject *parent) :
     QQmlApplicationEngine(parent),
     m_pimpl(std::make_unique<UiEngine::Impl>(this))
 {
-    this->rootContext()->setContextProperty("uiEngine", this);
-
-    m_pimpl->InitializeEvents();
+    m_pimpl->Initialize();
 }
 
 UiEngine::UiEngine(const QUrl &url, QObject *parent) :
     QQmlApplicationEngine(url, parent),
     m_pimpl(std::make_unique<UiEngine::Impl>(this))
 {
-    this->rootContext()->setContextProperty("uiEngine", this);
-
-    m_pimpl->InitializeEvents();
+    m_pimpl->Initialize();
 }
 
 UiEngine::UiEngine(const QString &filePath, QObject *parent) :
     QQmlApplicationEngine(filePath, parent),
     m_pimpl(std::make_unique<UiEngine::Impl>(this))
 {
-    this->rootContext()->setContextProperty("uiEngine", this);
-
-    m_pimpl->InitializeEvents();
+    m_pimpl->Initialize();
 }
 
 UiEngine::~UiEngine() = default;
@@ -73,7 +73,6 @@ bool UiEngine::notify(const QString &title, const QString &text, const int id) c
 #if defined(Q_OS_ANDROID)
     return Pool::Android()->Notify(title, text, id);
 #else
-    QSystemTrayIcon *tray = new QSystemTrayIcon();
     if (m_pimpl->Tray->isSystemTrayAvailable() || m_pimpl->Tray->supportsMessages()) {
         (void)id;
         m_pimpl->Tray->setVisible(true);
@@ -87,17 +86,18 @@ bool UiEngine::notify(const QString &title, const QString &text, const int id) c
 #endif // defined(Q_OS_ANDROID)
 }
 
-bool UiEngine::showToast(const QString &text, const int duration) const
+bool UiEngine::showToast(const QString &text, const int duration)
 {
 #if defined(Q_OS_ANDROID)
     return Pool::Android()->ShowToast(text, duration);
-#elif defined ( _WIN32 )
-    (void)duration;
-    MessageBoxW(0, text.toStdWString().c_str(), L"miniPOS", MB_OK);
-    return true;
 #else
-    qWarning() << "Toast has not been implemented on this platform, yet!";
-    qDebug() << text << duration;
+    QVariant returnedValue;
+    QVariant varText = text;
+    QVariant varDuration = duration;
+    QMetaObject::invokeMethod(this->rootObjects().first(), "showToast",
+                              Q_RETURN_ARG(QVariant, returnedValue),
+                              Q_ARG(QVariant, text),
+                              Q_ARG(QVariant, duration));
     return true;
 #endif // defined(Q_OS_ANDROID)
 }
@@ -140,6 +140,15 @@ void UiEngine::Impl::OnHeadSetStateChanged(const Pos::HeadSetState &state)
     default:
         break;
     }
+}
+
+void UiEngine::Impl::Initialize()
+{
+    QQmlContext *context = m_parent->rootContext();
+    context->setContextProperty("uiEngine", m_parent);
+    context->setContextProperty("FontPath", "qrc:///fnt/main.ttf");
+
+    InitializeEvents();
 }
 
 void UiEngine::Impl::InitializeEvents()
