@@ -70,13 +70,13 @@ Database::Database(const string &databaseFile) :
     m_pimpl(std::make_unique<Database::Impl>())
 {
     if (!m_pimpl->Sql.is_open()) {
-        bool isDriverLoadedSuccessfully = true;
+        bool isDatabaseOpenedSuccessfully = true;
         try {
             m_pimpl->Sql.open("sqlite3:db=" + databaseFile);
         } catch (...) {
-            isDriverLoadedSuccessfully = false;
+            isDatabaseOpenedSuccessfully = false;
         }
-        assert(isDriverLoadedSuccessfully);
+        assert(isDatabaseOpenedSuccessfully);
     }
 }
 
