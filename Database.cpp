@@ -1,4 +1,5 @@
 #include <unordered_map>
+#include <cassert>
 #include <cstdarg>
 #include <sqlite3.h>
 #include <cppdb/backend.h>
@@ -68,8 +69,15 @@ bool Database::Vacuum(const std::string &databaseFile)
 Database::Database(const string &databaseFile) :
     m_pimpl(std::make_unique<Database::Impl>())
 {
-    if (!m_pimpl->Sql.is_open())
-        m_pimpl->Sql.open("sqlite3:db=" + databaseFile);
+    if (!m_pimpl->Sql.is_open()) {
+        bool isDriverLoadedSuccessfully = true;
+        try {
+            m_pimpl->Sql.open("sqlite3:db=" + databaseFile);
+        } catch (...) {
+            isDriverLoadedSuccessfully = false;
+        }
+        assert(isDriverLoadedSuccessfully);
+    }
 }
 
 Database::~Database()
