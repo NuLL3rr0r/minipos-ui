@@ -21,9 +21,9 @@ private:
     std::unique_ptr<Impl> m_pimpl;
 
 public:
-#if defined(STATIC_LINK_DEPENDENCIES)
+#if defined ( STATIC_LINK_DEPENDENCIES )
     static void LoadSQLite3Driver();
-#endif  // defined(STATIC_LINK_DEPENDENCIES)
+#endif  // defined ( STATIC_LINK_DEPENDENCIES )
 
     static bool Vacuum(const std::string &databaseFile);
 

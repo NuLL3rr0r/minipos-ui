@@ -28,13 +28,12 @@ int main(int argc, char *argv[])
 
 void InitializeDatabase()
 {
-#if defined(Q_OS_ANDROID)
+#if defined ( Q_OS_ANDROID )
     return;
-#endif // defined(Q_OS_ANDROID)
+#endif // defined ( Q_OS_ANDROID )
 
     using namespace MiniPos;
 
-    Database::Vacuum(Pool::Storage()->DATABASE_FILE);
     Pool::Database()->Initialize();
 }
 
