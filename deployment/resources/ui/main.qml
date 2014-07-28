@@ -8,24 +8,40 @@ ApplicationWindow {
     visible: true;
     width: 640;
     height: 480;
-    title: qsTr("Hello World")
+    title: qsTr("مینی پوز");
+
+    function menuPressed(title) {
+        uiEngine.notify("مینی پوز", title);
+        uiEngine.showToast(title);
+    }
 
     menuBar: MenuBar {
         Menu {
-            title: qsTr("File")
+            title: qsTr("منوی اصلی");
             MenuItem {
-                text: qsTr("Exit")
+                text: qsTr("خرید");
+                onTriggered: menuPressed("خرید");
+            }
+            MenuItem {
+                text: qsTr("موجودی");
+                onTriggered: menuPressed("موجودی");
+            }
+            MenuItem {
+                text: qsTr("قبض");
+                onTriggered: menuPressed("قبض");
+            }
+            MenuItem {
+                text: qsTr("پرداخت خاص");
+                onTriggered: menuPressed("پرداخت خاص");
+            }
+            MenuItem {
+                text: qsTr("شارژ");
+                onTriggered: menuPressed("شارژ");
+            }
+            MenuItem {
+                text: qsTr("خروج");
                 onTriggered: Qt.quit();
             }
-        }
-    }
-
-    Button {
-        text: qsTr("Say Hello World!");
-        anchors.centerIn: parent;
-        onClicked: {
-            uiEngine.notify("mini POS", "Hello World!");
-            uiEngine.showToast("Hello World!");
         }
     }
 
