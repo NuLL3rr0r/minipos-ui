@@ -37,7 +37,6 @@ ApplicationWindow {
     }
 
     function showToast(text, duration) {
-        console.log(text);
         toast.timoutInterval = duration;
         toast.notificationText = "";
         toast.notificationText = text;
