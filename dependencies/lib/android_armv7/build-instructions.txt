@@ -1,0 +1,178 @@
+INSTRUCTIONS FOR BUILDING ON SLACKWARE64
+
+!! FIRST YOU SHOULD HAVE A FUNCTIONAL MULTILIB SLACKWARE INSTALLATION IN ORDER FOR THIS TO WORK !!
+
+
+
+################# BOOST
+
+cd ~/Desktop
+wget http://zlib.net/zlib-1.2.8.tar.xz
+tar xvJf zlib-1.2.8.tar.xz
+
+# ignore for now, it requires icu binaries for Android/Arm
+#wget http://download.icu-project.org/files/icu4c/53.1/icu4c-53_1-src.tgz
+#tar xvzf icu4c-53_1-src.tgz
+#-sICU_PATH="/home/babaei/Desktop/icu" \
+
+unzip Boost-for-Android-master.zip -d ~/Desktop
+cp boost_1_53_0.tar.bz2 ~/Desktop/Boost-for-Android-master/
+# or
+#cp boost_1_55_0.tar.bz2 ~/Desktop/Boost-for-Android-master/
+cd ~/Desktop/Boost-for-Android-master
+./build-android.sh --help
+ls /opt/android/ndk/toolchains/
+
+nano -w ./build-android.sh
+########
+echo "Detected Android NDK version $NDK_RN"
+
+case "$NDK_RN" in
+.
+.
+.
+    "9d (64-bit)")
+		TOOLCHAIN=${TOOLCHAIN:-arm-linux-androideabi-4.8}
+		CXXPATH=$AndroidNDKRoot/toolchains/${TOOLCHAIN}/prebuilt/${PlatformOS}-x86_64/bin/arm-linux-androideabi-g++
+		TOOLSET=gcc-androidR8e
+        ;;
+	*)
+		echo "Undefined or not supported Android NDK version!"
+		exit 1
+esac
+
+export MAKEFLAGS="-j5"
+
+mkdir -p /opt/android/include
+mkdir -p /opt/android/lib/debug
+mkdir -p /opt/android/lib/release
+
+nano -w ./build-android.sh
+########
+  { ./bjam -q                         \
+         toolset=$TOOLSET             \
+         $cxxflags                    \
+         variant=debug                \
+         --layout=system              \
+         threading=multi              \
+         link=static                  \
+         runtime-link=static          \
+         -sZLIB_SOURCE="/home/babaei/Desktop/zlib-1.2.8" \
+         install 2>&1                 \
+         || { dump "ERROR: Failed to build boost for android!" ; exit 1 ; }
+  } | tee -a $PROGDIR/build.log
+########
+
+# 1.53.0
+./build-android.sh --boost=1.53.0 --toolchain=arm-linux-androideabi-4.8 --with-libraries=atomic,chrono,context,date_time,exception,filesystem,graph,graph_parallel,iostreams,locale,math,mpi,program_options,python,random,regex,serialization,signals,system,test,thread,timer,wave /opt/android/ndk
+
+# 1.55.0
+./build-android.sh --boost=1.55.0 --toolchain=arm-linux-androideabi-4.8 --with-libraries=atomic,chrono,context,coroutine,date_time,exception,filesystem,graph,graph_parallel,iostreams,locale,log,math,mpi,program_options,random,regex,serialization,signals,system,test,thread,timer,wave /opt/android/ndk
+
+mv /home/babaei/Desktop/Boost-for-Android-master/build/include/boost /opt/android/include/
+mv /home/babaei/Desktop/Boost-for-Android-master/build/lib/* /opt/android/lib/debug/
+
+./build-android.sh --clean
+
+nano -w ./build-android.sh
+########
+  { ./bjam -q                         \
+         toolset=$TOOLSET             \
+         $cxxflags                    \
+         variant=release              \
+         --layout=system              \
+         threading=multi              \
+         link=static                  \
+         runtime-link=static          \
+         -sZLIB_SOURCE="/home/babaei/Desktop/zlib-1.2.8" \
+         install 2>&1                 \
+         || { dump "ERROR: Failed to build boost for android!" ; exit 1 ; }
+  } | tee -a $PROGDIR/build.log
+########
+
+# 1.53.0
+./build-android.sh --boost=1.53.0 --toolchain=arm-linux-androideabi-4.8 --with-libraries=atomic,chrono,context,date_time,exception,filesystem,graph,graph_parallel,iostreams,locale,math,mpi,program_options,random,regex,serialization,signals,system,test,thread,timer,wave /opt/android/ndk
+
+# 1.55.0
+./build-android.sh --boost=1.55.0 --toolchain=arm-linux-androideabi-4.8 --with-libraries=atomic,chrono,context,coroutine,date_time,exception,filesystem,graph,graph_parallel,iostreams,locale,log,math,mpi,program_options,random,regex,serialization,signals,system,test,thread,timer,wave /opt/android/ndk
+mv /home/babaei/Desktop/Boost-for-Android-master/build/lib/* /opt/android/lib/release/
+
+
+
+################# CPPDB
+
+# Download https://github.com/lookout/sqlite-android
+unzip sqlite-android-master.zip
+cd unzip sqlite-android-master
+
+nano -w Makefile
+########
+SQLITE_VERSION  ?= 3080403
+
+SQLITE_URL      := http://www.sqlite.org/2014/$(SQLITE_BASENAME).zip
+########
+
+unzip sqlite-amalgamation-3080403.zip
+cd sqlite-amalgamation-3080403
+cp sqlite3.h sqlite3ext.h /opt/android/include/
+cd ..
+rm -rf sqlite-amalgamation-3080403
+
+# NOTE: "APP_ABI := all" is also valid
+
+nano -w jni/Application.mk
+########
+APP_OPTIM := debug
+APP_ABI := armeabi-v7a
+########
+
+/opt/android/ndk/ndk-build
+cp obj/local/armeabi-v7a/libsqlite.a /opt/android/lib/debug/libsqlite3.a
+rm -rf obj
+
+nano -w jni/Application.mk
+########
+APP_OPTIM := release
+APP_ABI := armeabi-v7a
+########
+
+/opt/android/ndk/ndk-build
+cp obj/local/armeabi-v7a/libsqlite.a /opt/android/lib/release/libsqlite3.a
+
+tar xvjf cppdb-0.3.1.tar.bz2
+cd cppdb-0.3.1
+cp -ivr cppdb /opt/android/include/
+
+wget https://raw.githubusercontent.com/taka-no-me/android-cmake/master/android.toolchain.cmake
+rm -rf /tmp/android-toolchain
+/opt/android/ndk/build/tools/make-standalone-toolchain.sh --platform=android-14 --install-dir=/tmp/android-toolchain --toolchain=arm-linux-androideabi-4.8
+cp /opt/android/include/sqlite3.h /opt/android/include/sqlite3ext.h /tmp/android-toolchain/sysroot/usr/include/
+
+nano -w CMakeLists.txt
+########
+	#find_library(PTHREAD_LIB pthread NAMES thr kse)
+.
+.
+.
+	#target_link_libraries(cppdb ${PTHREAD_LIB})
+    set(C_FLAGS "${C_FLAGS} -pthreads")
+    set(CXX_FLAGS "${CXX_FLAGS} -pthreads")
+########
+
+mkdir _debug && cd _debug
+cp /opt/android/lib/debug/libsqlite3.a /tmp/android-toolchain/sysroot/usr/lib/
+cmake -DCMAKE_TOOLCHAIN_FILE=../android.toolchain.cmake -DANDROID_STANDALONE_TOOLCHAIN=/tmp/android-toolchain -DANDROID_ABI=armeabi-v7a -DCMAKE_BUILD_TYPE=Debug -DCMAKE_LIBRARY_PATH=/opt/android/lib/debug/ -DCMAKE_INCLUDE_PATH=/opt/android/include/ -DSQLITE_BACKEND_INTERNAL=OFF -DDISABLE_MYSQL=ON -DDISABLE_PQ=ON -DDISABLE_ODBC=ON ../
+make -j5
+cp ../libs/armeabi-v7a/libcppdb.a ../libs/armeabi-v7a/libcppdb_sqlite3.a /opt/android/lib/debug/
+cd ..
+
+rm -rf /tmp/android-toolchain/sysroot/usr/lib/libsqlite3.a
+rm -rf ./libs
+
+mkdir _release && cd _release
+cp /opt/android/lib/release/libsqlite3.a /tmp/android-toolchain/sysroot/usr/lib/
+cmake -DCMAKE_TOOLCHAIN_FILE=../android.toolchain.cmake -DANDROID_STANDALONE_TOOLCHAIN=/tmp/android-toolchain -DANDROID_ABI=armeabi-v7a -DCMAKE_BUILD_TYPE=Release -DCMAKE_LIBRARY_PATH=/opt/android/lib/debug/ -DCMAKE_INCLUDE_PATH=/opt/android/include/ -DSQLITE_BACKEND_INTERNAL=OFF -DDISABLE_MYSQL=ON -DDISABLE_PQ=ON -DDISABLE_ODBC=ON ../
+make -j5
+cp ../libs/armeabi-v7a/libcppdb.a ../libs/armeabi-v7a/libcppdb_sqlite3.a /opt/android/lib/release/
+#######################################
+

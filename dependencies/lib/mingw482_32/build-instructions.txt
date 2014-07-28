@@ -1,0 +1,71 @@
+
+
+
+################# BOOST
+
+1. In boost source tree:
+    cd .\tools\build\v2\engine\
+    .\build.bat mingw
+    move .\bin.ntx86\bjam.exe ..\..\..\..\
+    cd ..\..\..\..\
+    mkdir .\build_deb
+    mkdir .\build_rel
+
+2. For more info and available libs:
+    * bjam --help
+    * bjam --show-libraries
+
+3. To strat the build process:
+
+/// NOTE: Use absolute path for ZLIB_SOURCE
+
+bjam toolset=gcc variant=debug --layout=system threading=multi link=shared runtime-link=shared --build-dir=".\build_deb" --prefix="C:\Boost_deb" --without-mpi --without-python -sZLIB_SOURCE="D:\zlib-1.2.8" install
+
+bjam toolset=gcc variant=release --layout=system threading=multi link=shared runtime-link=shared --build-dir=".\build_rel" --prefix="C:\Boost_rel" --without-mpi --without-python -sZLIB_SOURCE="D:\zlib-1.2.8" install
+
+4. Now, (for both DEB and REL variants)
+copy Boost\include\* to our include dir
+copy Boost\lib\* to our lib dir
+
+
+
+################# CPPDB
+
+1. In sqlite-amalgamation-3080403
+    * qmake -project
+
+2. Rename sqlite-amalgamation-3080403.pro to sqlite3.pro
+
+3. In sqlite3.pro do the following changes:
+TEMPLATE = lib
+TARGET = sqlite3
+INCLUDEPATH += .
+CONFIG -= qt
+
+4. Do the following:
+    * qmake
+    * mingw32-make all -j5
+
+5. Copy the following files to the appropriate directory:
+debug/sqlite3.dll
+release/sqlite3.dll
+sqlite3.h
+sqlite3ext.h
+
+6. Create both build_debug and build_release directories inside the source tree of CppDB.
+
+2. For debug build:
+cmake -G "MinGW Makefiles"  -D CMAKE_BUILD_TYPE=Debug -DCMAKE_LIBRARY_PATH=../sqlite3/debug -DCMAKE_INCLUDE_PATH=../sqlite3/ -DSQLITE_BACKEND_INTERNAL=OFF -DDISABLE_MYSQL=ON -DDISABLE_PQ=ON -DDISABLE_ODBC=ON ..\
+
+3. For release build:
+cmake -G "MinGW Makefiles"  -D CMAKE_BUILD_TYPE=Release -DCMAKE_LIBRARY_PATH=../sqlite3/release -DCMAKE_INCLUDE_PATH=../sqlite3/ -DSQLITE_BACKEND_INTERNAL=OFF -DDISABLE_MYSQL=ON -DDISABLE_PQ=ON -DDISABLE_ODBC=ON ..\
+
+4. For each build:
+mingw32-make -j5
+
+5. Copy the following files to the appropriate directory:
+libcppdb.dll
+libcppdb_sqlite3.dll
+cppdb/*
+
+

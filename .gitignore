@@ -1,7 +1,14 @@
 dependencies/*
+!dependencies/lib/
+!dependencies/lib/android_armv5
+dependencies/lib/android_armv5/*
+!dependencies/lib/android_armv5/build-instructions.txt
 !dependencies/lib/android_armv7
 dependencies/lib/android_armv7/*
 !dependencies/lib/android_armv7/build-instructions.txt
+!dependencies/lib/android_x86
+dependencies/lib/android_x86/*
+!dependencies/lib/android_x86/build-instructions.txt
 !dependencies/lib/mingw482_32
 dependencies/lib/mingw482_32/*
 !dependencies/lib/mingw482_32/build-instructions.txt
