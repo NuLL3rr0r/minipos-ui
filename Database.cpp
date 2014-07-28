@@ -36,6 +36,11 @@ cppdb::backend::connection *cppdb_sqlite3_get_connection(cppdb::connection_info 
 #endif  // defined ( STATIC_LINK_DEPENDENCIES )
 
 #if defined ( STATIC_LINK_DEPENDENCIES )
+bool Database::IsSQLite3DriverLoaded()
+{
+    return Impl::IsSQLite3DriverLoaded;
+}
+
 void Database::LoadSQLite3Driver()
 {
     if (!Impl::IsSQLite3DriverLoaded) {

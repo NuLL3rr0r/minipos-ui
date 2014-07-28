@@ -109,6 +109,11 @@ MiniPos::Database *Pool::Database()
             assert(QFile::setPermissions(dbFile, QFile::ReadOwner | QFile::WriteOwner));
         }
 
+#if defined ( STATIC_LINK_DEPENDENCIES )
+        if (!Database::IsSQLite3DriverLoaded())
+            Database::LoadSQLite3Driver();
+#endif  // defined ( STATIC_LINK_DEPENDENCIES )
+
         Impl::DatabaseInstance =
                 std::make_unique<MiniPos::Database>(QDir::toNativeSeparators(dbFile).toStdString());
     }

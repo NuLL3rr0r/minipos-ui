@@ -10,6 +10,7 @@ void InitializeDatabase();
 
 int main(int argc, char *argv[])
 {
+#if !defined ( Q_OS_ANDROID )
     /*! Change to executable path */
     boost::filesystem::path path(boost::filesystem::initial_path<boost::filesystem::path>());
     if (argc > 0 && argv[0] != NULL)
@@ -17,6 +18,7 @@ int main(int argc, char *argv[])
     std::string appId(path.filename().string());
     std::string appPath(boost::algorithm::replace_last_copy(path.string(), appId, ""));
     boost::filesystem::current_path(appPath);
+#endif // !defined ( Q_OS_ANDROID )
 
     InitializeDatabase();
 
@@ -28,10 +30,6 @@ int main(int argc, char *argv[])
 
 void InitializeDatabase()
 {
-#if defined ( Q_OS_ANDROID )
-    return;
-#endif // defined ( Q_OS_ANDROID )
-
     using namespace MiniPos;
 
     Pool::Database()->Initialize();

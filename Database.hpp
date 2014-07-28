@@ -22,6 +22,7 @@ private:
 
 public:
 #if defined ( STATIC_LINK_DEPENDENCIES )
+    static bool IsSQLite3DriverLoaded();
     static void LoadSQLite3Driver();
 #endif  // defined ( STATIC_LINK_DEPENDENCIES )
 
