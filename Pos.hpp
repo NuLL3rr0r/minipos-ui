@@ -35,7 +35,6 @@ public:
 public:
     Pos();
     ~Pos();
-
 };
 
 
