@@ -17,6 +17,7 @@ win32 {
 
 
 QMAKE_CXXFLAGS += -std=c++1y
+QMAKE_CXXFLAGS += -Wall -Wextra -Wno-system-header -pedantic
 #INCLUDEPATH += $$PWD/dependencies/include
 QMAKE_CFLAGS += -isystem $$PWD/dependencies/include
 QMAKE_CXXFLAGS += -isystem $$PWD/dependencies/include
