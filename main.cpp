@@ -4,10 +4,6 @@
 #include <QtCore/QTranslator>
 #include "make_unique.hpp"
 #include "Application.hpp"
-#include "Database.hpp"
-#include "Pool.hpp"
-
-void InitializeDatabase();
 
 int main(int argc, char *argv[])
 {
@@ -21,22 +17,11 @@ int main(int argc, char *argv[])
     boost::filesystem::current_path(appPath);
 #endif // !defined ( Q_OS_ANDROID )
 
-    InitializeDatabase();
-
     std::unique_ptr<MiniPos::Application> app =
             std::make_unique<MiniPos::Application>(argc, argv);
-
-    MiniPos::Pool::Translator()->load(QLocale::system().name(), ":/translations/");
-    app->installTranslator(MiniPos::Pool::Translator());
-
+    app->InitializeDatabase();
     app->SetupUi();
+
     return app->exec();
-}
-
-void InitializeDatabase()
-{
-    using namespace MiniPos;
-
-    Pool::Database()->Initialize();
 }
 

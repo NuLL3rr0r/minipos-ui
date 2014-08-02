@@ -30,6 +30,7 @@ public slots:
     void OnFarsiMenuItemPressed();
 
 public:
+    void InitializeDatabase();
     void SetupUi();
 };
 
