@@ -18,6 +18,12 @@ ApplicationWindow {
         uiEngine.showToast(title);
     }
 
+    function showToast(text, duration) {
+        toast.timoutInterval = duration;
+        toast.notificationText = "";
+        toast.notificationText = text;
+    }
+
     menuBar: MenuBar {
         Menu {
             title: qsTr("mini POS") + uiEngine.EmptyLangString;
@@ -67,12 +73,6 @@ ApplicationWindow {
         anchors.fill: parent;
         anchors.centerIn: parent;
         fontPath: FontPath;
-    }
-
-    function showToast(text, duration) {
-        toast.timoutInterval = duration;
-        toast.notificationText = "";
-        toast.notificationText = text;
     }
 }
 
