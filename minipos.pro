@@ -68,9 +68,7 @@ RESOURCES += \
     deployment/resources/db.qrc \
     deployment/resources/fnt.qrc \
     deployment/resources/img.qrc \
-    deployment/resources/ui.qrc \
-    deployment/resources/translations.qrc
-
+    deployment/resources/ui.qrc
 
 android {
     ANDROID_PACKAGE_SOURCE_DIR = $$PWD/deployment/android
@@ -90,9 +88,63 @@ lupdate_only {
         $$PWD/deployment/resources/ui/main.qml
 }
 
-TRANSLATIONS += \
-    minipos_en.ts \
-    minipos_fa.ts
+
+#################
+# Automatically generating .qm language files and adding them to resources
+#################
+
+# var, prepend, append
+defineReplace(prependAll) {
+    for(a,$$1):result += $$2$${a}$$3
+    return($$result)
+}
+
+# Supported languages
+LANGUAGES = en fa
+
+# Available translations
+TRANSLATIONS = $$prependAll(LANGUAGES, $$PWD/translations/, .ts)
+
+# Used to embed the qm files in resources
+TRANSLATIONS_FILES =
+
+# run LRELEASE to generate the qm files
+qtPrepareTool(LRELEASE, lrelease)
+for(tsfile, TRANSLATIONS) {
+    qmfile = $$shadowed($$tsfile)
+    qmfile ~= s,\\.ts$,.qm,
+    qmdir = $$dirname(qmfile)
+    !exists($$qmdir) {
+        mkpath($$qmdir)|error("Aborting.")
+    }
+    command = $$LRELEASE -removeidentical $$tsfile -qm  $$qmfile
+    system($$command)|error("Failed to run: $$command")
+    TRANSLATIONS_FILES += $$qmfile
+}
+
+# Create the resource file
+GENERATED_RESOURCE_FILE = $$OUT_PWD/translations.qrc
+
+RESOURCE_CONTENT = \
+    "<RCC>" \
+    "<qresource>"
+
+for(translationfile, TRANSLATIONS_FILES) {
+    relativepath_out = $$relative_path($$translationfile, $$OUT_PWD)
+    RESOURCE_CONTENT += "<file alias=\"$$relativepath_out\">$$relativepath_out</file>"
+}
+
+RESOURCE_CONTENT += \
+    "</qresource>" \
+    "</RCC>"
+
+write_file($$GENERATED_RESOURCE_FILE, RESOURCE_CONTENT)|error("Aborting.")
+
+RESOURCES += $$GENERATED_RESOURCE_FILE
+
+#################
+### End of  # Automatically generating .qm language files and adding them to resources
+#################
 
 
 # Additional import path used to resolve QML modules in Qt Creator's code model
