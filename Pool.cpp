@@ -3,6 +3,7 @@
 #include <QtCore/QDir>
 #include <QtCore/QFile>
 #include <QtCore/QFileInfo>
+#include <QtCore/QTranslator>
 #include "make_unique.hpp"
 #include "Pool.hpp"
 #if defined ( Q_OS_ANDROID )
@@ -29,6 +30,7 @@ struct Pool::Impl
 #endif // defined ( Q_OS_ANDROID )
     typedef std::unique_ptr<MiniPos::Database> Database_t;
     typedef std::unique_ptr<MiniPos::Pos> Pos_t;
+    typedef std::unique_ptr<QTranslator> QTranslator_t;
 
     static std::mutex StorageMutex;
     static Storage_t StorageInstance;
@@ -43,6 +45,9 @@ struct Pool::Impl
 
     static std::mutex PosMutex;
     static Pos_t PosInstance;
+
+    static std::mutex TranslatorMutex;
+    static QTranslator_t TranslatorInstance;
 };
 
 std::mutex Pool::Impl::StorageMutex;
@@ -58,6 +63,9 @@ Pool::Impl::Database_t Pool::Impl::DatabaseInstance = nullptr;
 
 std::mutex Pool::Impl::PosMutex;
 Pool::Impl::Pos_t Pool::Impl::PosInstance = nullptr;
+
+std::mutex Pool::Impl::TranslatorMutex;
+Pool::Impl::QTranslator_t Pool::Impl::TranslatorInstance = nullptr;
 
 Pool::StorageStruct *Pool::Storage()
 {
@@ -132,5 +140,18 @@ MiniPos::Pos *Pool::Pos()
     }
 
     return Impl::PosInstance.get();
+}
+
+QTranslator *Pool::Translator()
+{
+    lock_guard<mutex> lock(Impl::TranslatorMutex);
+    (void)lock;
+
+    if (Impl::TranslatorInstance == nullptr) {
+        Impl::TranslatorInstance =
+                std::make_unique<QTranslator>();
+    }
+
+    return Impl::TranslatorInstance.get();
 }
 

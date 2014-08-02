@@ -45,6 +45,8 @@ UiEngine::UiEngine(QObject *parent) :
     QQmlApplicationEngine(parent),
     m_pimpl(std::make_unique<UiEngine::Impl>(this))
 {
+    this->rootContext()->setContextProperty("uiEngine", this);
+
     m_pimpl->Initialize();
 }
 
@@ -63,6 +65,11 @@ UiEngine::UiEngine(const QString &filePath, QObject *parent) :
 }
 
 UiEngine::~UiEngine() = default;
+
+QString UiEngine::GetEmptyLangString() const
+{
+    return "";
+}
 
 bool UiEngine::notify(const QString &title, const QString &text, const int id) const
 {

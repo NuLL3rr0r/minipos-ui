@@ -17,7 +17,7 @@ win32 {
 
 
 QMAKE_CXXFLAGS += -std=c++1y
-QMAKE_CXXFLAGS += -Wall -Wextra -Wno-system-header -pedantic
+QMAKE_CXXFLAGS += -Wall -Wextra -pedantic
 #INCLUDEPATH += $$PWD/dependencies/include
 QMAKE_CFLAGS += -isystem $$PWD/dependencies/include
 QMAKE_CXXFLAGS += -isystem $$PWD/dependencies/include
@@ -68,7 +68,8 @@ RESOURCES += \
     deployment/resources/db.qrc \
     deployment/resources/fnt.qrc \
     deployment/resources/img.qrc \
-    deployment/resources/ui.qrc
+    deployment/resources/ui.qrc \
+    deployment/resources/translations.qrc
 
 
 android {
@@ -83,6 +84,15 @@ android {
         deployment/android/res/values/strings.xml \
         deployment/android/src/com/rahpooyanco/minipos/Android.java
 }
+
+lupdate_only {
+    SOURCES += \
+        $$PWD/deployment/resources/ui/main.qml
+}
+
+TRANSLATIONS += \
+    minipos_en.ts \
+    minipos_fa.ts
 
 
 # Additional import path used to resolve QML modules in Qt Creator's code model

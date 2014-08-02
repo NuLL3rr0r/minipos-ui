@@ -13,6 +13,8 @@ class MiniPos::UiEngine : public QQmlApplicationEngine
 {
     Q_OBJECT
 
+    Q_PROPERTY ( QString EmptyLangString READ GetEmptyLangString NOTIFY signal_LanguageChanged )
+
 private:
     struct Impl;
     std::unique_ptr<Impl> m_pimpl;
@@ -24,8 +26,10 @@ public:
     virtual ~UiEngine();
 
 signals:
+    void signal_LanguageChanged();
 
-public slots:
+public:
+    QString GetEmptyLangString() const;
 
 public:
     Q_INVOKABLE bool notify(const QString &title, const QString &text, const int id = 0) const;

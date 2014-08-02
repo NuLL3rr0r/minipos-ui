@@ -5,6 +5,8 @@
 #include <QtCore/QObject>
 #include <memory>
 
+class QTranslator;
+
 namespace MiniPos {
 #if defined ( Q_OS_ANDROID )
 class Android;
@@ -29,6 +31,7 @@ public:
 #endif // defined ( Q_OS_ANDROID )
     static MiniPos::Database *Database();
     static MiniPos::Pos *Pos();
+    static QTranslator *Translator();
 };
 
 

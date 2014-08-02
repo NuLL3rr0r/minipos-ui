@@ -1,6 +1,7 @@
 #include <memory>
 #include <boost/algorithm/string.hpp>
 #include <boost/filesystem.hpp>
+#include <QtCore/QTranslator>
 #include "make_unique.hpp"
 #include "Application.hpp"
 #include "Database.hpp"
@@ -24,6 +25,10 @@ int main(int argc, char *argv[])
 
     std::unique_ptr<MiniPos::Application> app =
             std::make_unique<MiniPos::Application>(argc, argv);
+
+    MiniPos::Pool::Translator()->load(QLocale::system().name(), ":/translations/");
+    app->installTranslator(MiniPos::Pool::Translator());
+
     app->SetupUi();
     return app->exec();
 }

@@ -8,38 +8,55 @@ ApplicationWindow {
     visible: true;
     width: 640;
     height: 480;
-    title: qsTr("مینی پوز");
+    title: qsTr("mini POS Card Reader") + uiEngine.EmptyLangString;
+
+    signal signal_englishMenuItemPressed();
+    signal signal_farsiMenuItemPressed();
 
     function menuPressed(title) {
-        uiEngine.notify("مینی پوز", title);
+        uiEngine.notify(qsTr("mini POS Card Reader") + uiEngine.EmptyLangString, title);
         uiEngine.showToast(title);
     }
 
     menuBar: MenuBar {
         Menu {
-            title: qsTr("منوی اصلی");
+            title: qsTr("mini POS") + uiEngine.EmptyLangString;
             MenuItem {
-                text: qsTr("خرید");
-                onTriggered: menuPressed("خرید");
+                text: qsTr("Purchase") + uiEngine.EmptyLangString;
+                onTriggered: menuPressed(qsTr("Purchase") + uiEngine.EmptyLangString);
             }
             MenuItem {
-                text: qsTr("موجودی");
-                onTriggered: menuPressed("موجودی");
+                text: qsTr("Balance") + uiEngine.EmptyLangString;
+                onTriggered: menuPressed(qsTr("Balance") + uiEngine.EmptyLangString);
             }
             MenuItem {
-                text: qsTr("قبض");
-                onTriggered: menuPressed("قبض");
+                text: qsTr("Bill Payment") + uiEngine.EmptyLangString;
+                onTriggered: menuPressed(qsTr("Bill Payment") + uiEngine.EmptyLangString);
             }
             MenuItem {
-                text: qsTr("پرداخت خاص");
-                onTriggered: menuPressed("پرداخت خاص");
+                text: qsTr("Special Payment") + uiEngine.EmptyLangString;
+                onTriggered: menuPressed(qsTr("Special Payment") + uiEngine.EmptyLangString);
             }
             MenuItem {
-                text: qsTr("شارژ");
-                onTriggered: menuPressed("شارژ");
+                text: qsTr("Charging Mobile") + uiEngine.EmptyLangString;
+                onTriggered: menuPressed(qsTr("Charging Mobile") + uiEngine.EmptyLangString);
+            }
+            Menu {
+                title: qsTr("Language") + uiEngine.EmptyLangString;
+
+                MenuItem {
+                    id: englishMenuItem;
+                    text: "English";
+                    onTriggered: signal_englishMenuItemPressed();
+                }
+                MenuItem {
+                    id: farsiMenuItem;
+                    text: "فارسی";
+                    onTriggered: signal_farsiMenuItemPressed();
+                }
             }
             MenuItem {
-                text: qsTr("خروج");
+                text: qsTr("Exit") + uiEngine.EmptyLangString;
                 onTriggered: Qt.quit();
             }
         }
@@ -58,3 +75,4 @@ ApplicationWindow {
         toast.notificationText = text;
     }
 }
+
