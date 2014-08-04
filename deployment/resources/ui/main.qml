@@ -55,7 +55,7 @@ ApplicationWindow {
                     text: "English";
                     onTriggered: {
                         signal_englishMenuItemPressed();
-                        uiEngine.showToast("The language has changed to English!");
+                        uiEngine.showToast("The language is changed to English!");
                     }
                 }
                 MenuItem {
