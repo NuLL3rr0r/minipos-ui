@@ -1,4 +1,4 @@
-import QtQuick 2.1;
+import QtQuick 2.2;
 
 Item {
     id: toast;
@@ -100,7 +100,7 @@ Item {
 
     Timer {
         id: timeoutTimer;
-        interval: 8000;
+        interval: 6000;
         repeat: false;
         onTriggered: {
             fadeOutAnim.start();
