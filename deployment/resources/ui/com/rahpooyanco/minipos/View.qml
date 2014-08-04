@@ -19,7 +19,7 @@ Item {
         orientation: ListView.Horizontal;
         snapMode: ListView.SnapOneItem;
         cacheBuffer: 1;
-        highlightMoveVelocity: 2000;
+        highlightMoveVelocity: 4000;
         highlightMoveDuration: 500;
     }
 
