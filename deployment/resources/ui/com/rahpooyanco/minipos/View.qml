@@ -19,14 +19,14 @@ Item {
         orientation: ListView.Horizontal;
         snapMode: ListView.SnapOneItem;
         cacheBuffer: 1;
-        highlightMoveVelocity: 1000;
-        highlightMoveDuration: 750;
+        highlightMoveVelocity: 2000;
+        highlightMoveDuration: 500;
     }
 
     Rectangle  {
         id: navBar;
         width: parent.width;
-        height: parent.height * 0.1;
+        height: parent.height * 0.075;
         anchors  {
             top: listView.bottom;
             bottom: parent.bottom;
@@ -35,15 +35,15 @@ Item {
 
         Row  {
             anchors.centerIn: parent
-            spacing: navBar.height * 0.5;
+            spacing: navBar.height * 0.4;
 
             Repeater  {
                 model: view.model.count;
 
                 Rectangle  {
-                    width: navBar.height * 0.5;
-                    height: navBar.height * 0.5;
-                    radius: navBar.height * 0.3;
+                    width: navBar.height * 0.4;
+                    height: navBar.height * 0.4;
+                    radius: navBar.height * 0.25;
                     color: listView.currentIndex === index ? "blue" : "white";
 
                     MouseArea  {
