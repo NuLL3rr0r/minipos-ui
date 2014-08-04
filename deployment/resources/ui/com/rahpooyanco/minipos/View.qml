@@ -35,7 +35,7 @@ Item {
 
         Row  {
             anchors.centerIn: parent
-            spacing: 20;
+            spacing: navBar.height * 0.5;
 
             Repeater  {
                 model: view.model.count;
