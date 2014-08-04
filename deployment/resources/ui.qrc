@@ -2,5 +2,6 @@
     <qresource prefix="/">
         <file>ui/com/rahpooyanco/minipos/Toast.qml</file>
         <file>ui/main.qml</file>
+        <file>ui/com/rahpooyanco/minipos/View.qml</file>
     </qresource>
 </RCC>
