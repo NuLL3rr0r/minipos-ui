@@ -53,12 +53,18 @@ ApplicationWindow {
                 MenuItem {
                     id: englishMenuItem;
                     text: "English";
-                    onTriggered: signal_englishMenuItemPressed();
+                    onTriggered: {
+                        signal_englishMenuItemPressed();
+                        uiEngine.showToast("The language has changed to English!");
+                    }
                 }
                 MenuItem {
                     id: farsiMenuItem;
-                    text: "فارسی";
-                    onTriggered: signal_farsiMenuItemPressed();
+                    text: "فارسی"
+                    onTriggered: {
+                        signal_farsiMenuItemPressed();
+                        uiEngine.showToast("زبان به فارسی تغییر یافت!");
+                    }
                 }
             }
             MenuItem {
