@@ -99,7 +99,7 @@ ApplicationWindow {
                 height: view.height;
                 color: "#FFFEF0";
                 Text  {
-                    text: qsTr("Welcome");
+                    text: qsTr("Welcome") + uiEngine.EmptyLangString;
                     font.bold: true;
                     anchors.centerIn: parent;
                 }
@@ -109,7 +109,7 @@ ApplicationWindow {
                 height: view.height;
                 color: "#F0FFF7";
                 Text  {
-                    text: qsTr("Purchase");
+                    text: qsTr("Purchase") + uiEngine.EmptyLangString;
                     font.bold: true;
                     anchors.centerIn: parent;
                 }
@@ -119,7 +119,7 @@ ApplicationWindow {
                 height: view.height;
                 color: "#F4F0FF";
                 Text  {
-                    text: qsTr("Balance");
+                    text: qsTr("Balance") + uiEngine.EmptyLangString;
                     font.bold: true;
                     anchors.centerIn: parent;
                 }
@@ -129,7 +129,7 @@ ApplicationWindow {
                 height: view.height;
                 color: "#FFFEF0";
                 Text  {
-                    text: qsTr("Bill Paymente");
+                    text: qsTr("Bill Paymente") + uiEngine.EmptyLangString;
                     font.bold: true;
                     anchors.centerIn: parent;
                 }
@@ -139,7 +139,7 @@ ApplicationWindow {
                 height: view.height;
                 color: "#F0FFF7";
                 Text  {
-                    text: qsTr("Special Payment");
+                    text: qsTr("Special Payment") + uiEngine.EmptyLangString;
                     font.bold: true;
                     anchors.centerIn: parent;
                 }
@@ -149,7 +149,7 @@ ApplicationWindow {
                 height: view.height;
                 color: "#F4F0FF";
                 Text  {
-                    text: qsTr("Charging Mobile");
+                    text: qsTr("Charging Mobile") + uiEngine.EmptyLangString;
                     font.bold: true;
                     anchors.centerIn: parent;
                 }
