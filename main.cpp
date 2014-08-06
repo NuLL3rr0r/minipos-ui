@@ -1,12 +1,16 @@
+#include <iostream>
 #include <memory>
 #include <boost/algorithm/string.hpp>
 #include <boost/filesystem.hpp>
 #include <QtCore/QTranslator>
 #include "make_unique.hpp"
 #include "Application.hpp"
+#include "Log.hpp"
 
 int main(int argc, char *argv[])
 {
+    MiniPos::Log::Initialize(std::cout);
+
 #if !defined ( Q_OS_ANDROID )
     /*! Change to executable path */
     boost::filesystem::path path(boost::filesystem::initial_path<boost::filesystem::path>());

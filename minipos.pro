@@ -39,13 +39,14 @@ win32 {
         LIBS += -L$$PWD/dependencies/lib/mingw482_32/release
     }
 }
-LIBS += -lboost_filesystem -lboost_system -lcppdb -lcppdb_sqlite3 -lsqlite3
+LIBS += -lboost_date_time -lboost_filesystem -lboost_system -lcppdb -lcppdb_sqlite3 -lsqlite3
 
 
 HEADERS += \
     make_unique.hpp \
     Application.hpp \
     Database.hpp \
+    Log.hpp \
     Pool.hpp \
     Pos.hpp \
     UiEngine.hpp
@@ -53,6 +54,7 @@ SOURCES += \
     main.cpp \
     Application.cpp \
     Database.cpp \
+    Log.cpp \
     Pool.cpp \
     Pos.cpp \
     UiEngine.cpp
