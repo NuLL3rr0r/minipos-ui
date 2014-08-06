@@ -129,7 +129,7 @@ ApplicationWindow {
                 height: view.height;
                 color: "#FFFEF0";
                 Text  {
-                    text: qsTr("Bill Paymente") + uiEngine.EmptyLangString;
+                    text: qsTr("Bill Payment") + uiEngine.EmptyLangString;
                     font.bold: true;
                     anchors.centerIn: parent;
                 }
