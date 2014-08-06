@@ -1,3 +1,4 @@
+#include <mutex>
 #include <unordered_map>
 #include <cassert>
 #include <boost/algorithm/string.hpp>
