@@ -105,13 +105,13 @@ LANGUAGES = en fa
 # Available translations
 TRANSLATIONS = $$prependAll(LANGUAGES, $$PWD/translations/, .ts)
 
-# Used to embed the qm files in resources
-TRANSLATIONS_FILES =
-
 # run LUPDATE to generate or update the ts files
 qtPrepareTool(LUPDATE, lupdate)
 command = $$LUPDATE minipos.pro
 system($$command)|error("Failed to run: $$command")
+
+# Used to embed the qm files in resources
+TRANSLATIONS_FILES =
 
 # run LRELEASE to generate the qm files
 qtPrepareTool(LRELEASE, lrelease)
