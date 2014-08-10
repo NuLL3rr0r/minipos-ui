@@ -93,7 +93,11 @@ bool UiEngine::notify(const QString &title, const QString &text, const int id) c
 #endif // defined ( Q_OS_ANDROID )
 }
 
+#if defined ( Q_OS_ANDROID )
+bool UiEngine::showToast(const QString &text, const int duration) const
+#else
 bool UiEngine::showToast(const QString &text, const int duration)
+#endif // defined ( Q_OS_ANDROID )
 {
 #if defined ( Q_OS_ANDROID )
     return Pool::Android()->ShowToast(text, duration);
