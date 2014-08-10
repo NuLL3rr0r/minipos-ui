@@ -54,6 +54,8 @@ UiEngine::UiEngine(const QUrl &url, QObject *parent) :
     QQmlApplicationEngine(url, parent),
     m_pimpl(std::make_unique<UiEngine::Impl>(this))
 {
+    this->rootContext()->setContextProperty("uiEngine", this);
+
     m_pimpl->Initialize();
 }
 
@@ -61,6 +63,8 @@ UiEngine::UiEngine(const QString &filePath, QObject *parent) :
     QQmlApplicationEngine(filePath, parent),
     m_pimpl(std::make_unique<UiEngine::Impl>(this))
 {
+    this->rootContext()->setContextProperty("uiEngine", this);
+
     m_pimpl->Initialize();
 }
 
