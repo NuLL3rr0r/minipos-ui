@@ -21,7 +21,7 @@ static void onHeadSetStateChanged(JNIEnv *, jobject, int state)
 }
 
 static JNINativeMethod s_nativeMethods[] = {
-    {"onHeadSetStateChanged", "(I)V", (void *)onHeadSetStateChanged}
+    { "onHeadSetStateChanged", "(I)V", (void *)onHeadSetStateChanged }
 };
 
 JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *)
