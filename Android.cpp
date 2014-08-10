@@ -34,7 +34,7 @@ JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *)
 
     jclass clazz = env->FindClass(JAVA_CLASS);
     if (!clazz) {
-        qCritical()<<"  * Could not find the Android interface class !!";
+        qCritical() << "  * Could not find the Android interface class !!";
         return -1;
     }
 
@@ -43,7 +43,7 @@ JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *)
                 s_nativeMethods,
                 sizeof(s_nativeMethods) / sizeof(s_nativeMethods[0])
                 ) < 0) {
-        qCritical()<<"   * Failed to Register native methods !!";
+        qCritical() << "   * Failed to Register native methods !!";
         return -1;
     }
 
