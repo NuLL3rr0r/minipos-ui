@@ -25,10 +25,26 @@ QMAKE_CXXFLAGS += -isystem $$PWD/dependencies/include
 
 android {
     debug {
-        LIBS += -L$$PWD/dependencies/lib/android_armv7/debug
+        equals ( ANDROID_TARGET_ARCH, armeabi ) {
+            LIBS += -L$$PWD/dependencies/lib/android_armv5/debug
+        }
+        equals ( ANDROID_TARGET_ARCH, armeabi-v7a ) {
+            LIBS += -L$$PWD/dependencies/lib/android_armv7/debug
+        }
+        equals ( ANDROID_TARGET_ARCH, x86 ) {
+            LIBS += -L$$PWD/dependencies/lib/android_x86/debug
+        }
     }
     release {
-        LIBS += -L$$PWD/dependencies/lib/android_armv7/release
+        equals ( ANDROID_TARGET_ARCH, armeabi ) {
+            LIBS += -L$$PWD/dependencies/lib/android_armv5/release
+        }
+        equals ( ANDROID_TARGET_ARCH, armeabi-v7a ) {
+            LIBS += -L$$PWD/dependencies/lib/android_armv7/release
+        }
+        equals ( ANDROID_TARGET_ARCH, x86 ) {
+            LIBS += -L$$PWD/dependencies/lib/android_x86/release
+        }
     }
 }
 win32 {
