@@ -1,5 +1,5 @@
-#ifndef MINIPOS_ANDROIDOBJECT_HPP
-#define MINIPOS_ANDROIDOBJECT_HPP
+#ifndef MINIPOS_ANDROID_HPP
+#define MINIPOS_ANDROID_HPP
 
 
 #include <functional>
@@ -42,4 +42,4 @@ public:
 };
 
 
-#endif /* MINIPOS_ANDROIDOBJECT_HPP */
+#endif /* MINIPOS_ANDROID_HPP */
