@@ -2,9 +2,9 @@
 #include <QtCore/QVariant>
 #include <QtQml/QQmlContext>
 #include <QtWidgets/QSystemTrayIcon>
-#if !defined ( Q_OS_ANDROID )
+#if defined ( _WIN32 )
 #include <windows.h>
-#endif // ! defined ( Q_OS_ANDROID )
+#endif  // defined ( _WIN32 )
 #include "make_unique.hpp"
 #include "uiengine.hpp"
 #if defined ( Q_OS_ANDROID )
