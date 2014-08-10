@@ -80,6 +80,10 @@ android {
     SOURCES += \
         Android.cpp
 }
+lupdate_only {
+    SOURCES += \
+        $$PWD/deployment/resources/ui/main.qml
+}
 
 
 RESOURCES += \
@@ -99,11 +103,6 @@ android {
         deployment/android/res/drawable-mdpi/icon.png \
         deployment/android/res/values/strings.xml \
         deployment/android/src/com/rahpooyanco/minipos/Android.java
-}
-
-lupdate_only {
-    SOURCES += \
-        $$PWD/deployment/resources/ui/main.qml
 }
 
 
