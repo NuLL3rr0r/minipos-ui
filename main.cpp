@@ -2,7 +2,6 @@
 #include <memory>
 #include <boost/algorithm/string.hpp>
 #include <boost/filesystem.hpp>
-#include <QtCore/QTranslator>
 #include "make_unique.hpp"
 #include "Application.hpp"
 #include "Log.hpp"
