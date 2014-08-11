@@ -8,7 +8,7 @@
 #include <string>
 
 namespace MiniPos {
-    class Log;
+class Log;
 }
 
 class MiniPos::Log
