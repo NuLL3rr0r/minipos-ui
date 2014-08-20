@@ -1,10 +1,10 @@
-
-
-
 ################# BOOST
 
 1. In boost source tree:
+    # <= 1.55.0
     cd .\tools\build\v2\engine\
+    # >= 1.56.0
+    cd .\tools\build\src\engine\
     .\build.bat mingw
     move .\bin.ntx86\bjam.exe ..\..\..\..\
     cd ..\..\..\..\
@@ -29,12 +29,12 @@ copy Boost\lib\* to our lib dir
 
 
 
-################# CPPDB
+################# CPPDB & SQLITE
 
-1. In sqlite-amalgamation-3080403
+1. In sqlite-amalgamation-3080600
     * qmake -project
 
-2. Rename sqlite-amalgamation-3080403.pro to sqlite3.pro
+2. Rename sqlite-amalgamation-3080600.pro to sqlite3.pro
 
 3. In sqlite3.pro do the following changes:
 TEMPLATE = lib
@@ -54,18 +54,71 @@ sqlite3ext.h
 
 6. Create both build_debug and build_release directories inside the source tree of CppDB.
 
-2. For debug build:
-cmake -G "MinGW Makefiles"  -D CMAKE_BUILD_TYPE=Debug -DCMAKE_LIBRARY_PATH=../sqlite3/debug -DCMAKE_INCLUDE_PATH=../sqlite3/ -DSQLITE_BACKEND_INTERNAL=OFF -DDISABLE_MYSQL=ON -DDISABLE_PQ=ON -DDISABLE_ODBC=ON ..\
+7. For debug build:
+cmake -G "MinGW Makefiles" -D CMAKE_BUILD_TYPE=Debug -DCMAKE_LIBRARY_PATH=../sqlite3/debug -DCMAKE_INCLUDE_PATH=../sqlite3/ -DSQLITE_BACKEND_INTERNAL=OFF -DDISABLE_MYSQL=ON -DDISABLE_PQ=ON -DDISABLE_ODBC=ON ..\
 
-3. For release build:
-cmake -G "MinGW Makefiles"  -D CMAKE_BUILD_TYPE=Release -DCMAKE_LIBRARY_PATH=../sqlite3/release -DCMAKE_INCLUDE_PATH=../sqlite3/ -DSQLITE_BACKEND_INTERNAL=OFF -DDISABLE_MYSQL=ON -DDISABLE_PQ=ON -DDISABLE_ODBC=ON ..\
+8. For release build:
+cmake -G "MinGW Makefiles" -D CMAKE_BUILD_TYPE=Release -DCMAKE_LIBRARY_PATH=../sqlite3/release -DCMAKE_INCLUDE_PATH=../sqlite3/ -DSQLITE_BACKEND_INTERNAL=OFF -DDISABLE_MYSQL=ON -DDISABLE_PQ=ON -DDISABLE_ODBC=ON ..\
 
-4. For each build:
+9. For each build:
 mingw32-make -j5
 
-5. Copy the following files to the appropriate directory:
+10. Copy the following files to your own corresponding directory:
 libcppdb.dll
 libcppdb_sqlite3.dll
 cppdb/*
 
 
+
+################# CRYPTOPP
+
+1. In cryptopp562
+    * del GNUmakefile
+    * qmake -project
+
+2. Rename cryptopp562.pro to cryptopp.pro
+
+3. In cryptopp.pro do the following changes:
+TEMPLATE = lib
+TARGET = cryptopp
+INCLUDEPATH += .
+CONFIG -= qt
+LIBS += -lws2_32
+//QMAKE_CFLAGS += -DCRYPTOPP_DISABLE_ASM
+//QMAKE_CXXFLAGS += -DCRYPTOPP_DISABLE_ASM
+
+4. Open fipstest.cpp and replace every 'OutputDebugString' with 'OutputDebugStringA'.
+
+5. Do the following:
+    * qmake
+    * mingw32-make all -j5
+
+6. Copy the following files to your own corresponding directory:
+debug/cryptopp.dll
+release/cryptopp.dll
+./*.h
+
+
+
+################# LIBB64
+
+1. In libb64-1.2/src
+    * del Makefile
+    * qmake -project
+
+2. Rename src.pro to b64.pro
+
+3. In b64.pro do the following changes:
+TEMPLATE = lib
+TARGET = b64
+INCLUDEPATH += ../include
+CONFIG -= qt
+
+4. Do the following:
+    * qmake
+    * mingw32-make all -j5
+
+5. Copy the following files to your own corresponding directory:
+debug/b64.dll
+release/b64.dll
+include/b64/*

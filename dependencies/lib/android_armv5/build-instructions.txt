@@ -15,11 +15,9 @@ tar xvJf zlib-1.2.8.tar.xz
 #tar xvzf icu4c-53_1-src.tgz
 #-sICU_PATH="/home/babaei/Desktop/icu" \
 
-unzip Boost-for-Android-master.zip -d ~/Desktop
-cp boost_1_53_0.tar.bz2 ~/Desktop/Boost-for-Android-master/
-# or
-#cp boost_1_55_0.tar.bz2 ~/Desktop/Boost-for-Android-master/
-cd ~/Desktop/Boost-for-Android-master
+git clone https://github.com/MysticTreeGames/Boost-for-Android.git
+cp -vr boost_1_55_0.tar.bz2 ~/Desktop/Boost-for-Android-master/
+cd ~/Desktop/Boost-for-Android
 ./build-android.sh --help
 ls /opt/android/ndk/toolchains/
 
@@ -31,15 +29,26 @@ case "$NDK_RN" in
 .
 .
 .
-    "9d (64-bit)")
-		TOOLCHAIN=${TOOLCHAIN:-arm-linux-androideabi-4.8}
-		CXXPATH=$AndroidNDKRoot/toolchains/${TOOLCHAIN}/prebuilt/${PlatformOS}-x86_64/bin/arm-linux-androideabi-g++
-		TOOLSET=gcc-androidR8e
+    "8e (64-bit)")
+        TOOLCHAIN=${TOOLCHAIN:-arm-linux-androideabi-4.8}
+        CXXPATH=$AndroidNDKRoot/toolchains/${TOOLCHAIN}/prebuilt/${PlatformOS}-x86_64/bin/arm-linux-androideabi-g++
+        TOOLSET=gcc-androidR8e
         ;;
-	*)
-		echo "Undefined or not supported Android NDK version!"
-		exit 1
+    "9 (64-bit)"|"9b (64-bit)"|"9c (64-bit)"|"9d (64-bit)")
+        TOOLCHAIN=${TOOLCHAIN:-arm-linux-androideabi-4.8}
+        CXXPATH=$AndroidNDKRoot/toolchains/${TOOLCHAIN}/prebuilt/${PlatformOS}-x86_64/bin/arm-linux-androideabi-g++
+        TOOLSET=gcc-androidR8e
+        ;;
+    "10 (64-bit)")
+        TOOLCHAIN=${TOOLCHAIN:-arm-linux-androideabi-4.8}
+        CXXPATH=$AndroidNDKRoot/toolchains/${TOOLCHAIN}/prebuilt/${PlatformOS}-x86_64/bin/arm-linux-androideabi-g++
+        TOOLSET=gcc-androidR8e
+        ;;
+    *)
+        echo "Undefined or not supported Android NDK version!"
+        exit 1
 esac
+########
 
 export MAKEFLAGS="-j5"
 
@@ -50,103 +59,133 @@ mkdir -p /opt/android/lib/android_armv5/release
 nano -w ./build-android.sh
 ########
   { ./bjam -q                         \
+         target-os=linux              \
          toolset=$TOOLSET             \
          $cxxflags                    \
          variant=debug                \
-         --layout=system              \
-         threading=multi              \
          link=static                  \
          runtime-link=static          \
+         threading=multi              \
+         --layout=system              \
+         --prefix="./../$BUILD_DIR/"  \
          -sZLIB_SOURCE="/home/babaei/Desktop/zlib-1.2.8" \
+         $LIBRARIES                   \
          install 2>&1                 \
          || { dump "ERROR: Failed to build boost for android!" ; exit 1 ; }
   } | tee -a $PROGDIR/build.log
 ########
 
-# 1.53.0
-./build-android.sh --boost=1.53.0 --toolchain=arm-linux-androideabi-4.8 --with-libraries=atomic,chrono,context,date_time,exception,filesystem,graph,graph_parallel,iostreams,locale,math,mpi,program_options,python,random,regex,serialization,signals,system,test,thread,timer,wave /opt/android/ndk
+# To get list of available boost binary libraries
+tar xjf boost_1_55_0.tar.bz2 && cd boost_1_55_0
+./bootstrap.sh --show-libraries
+cd .. && rm -rf boost_1_55_0
 
-# 1.55.0
+# 1.55.0 - without python library
 ./build-android.sh --boost=1.55.0 --toolchain=arm-linux-androideabi-4.8 --with-libraries=atomic,chrono,context,coroutine,date_time,exception,filesystem,graph,graph_parallel,iostreams,locale,log,math,mpi,program_options,random,regex,serialization,signals,system,test,thread,timer,wave /opt/android/ndk
 
-mv /home/babaei/Desktop/Boost-for-Android-master/build/include/boost /opt/android/include/
-mv /home/babaei/Desktop/Boost-for-Android-master/build/lib/* /opt/android/lib/android_armv5/debug/
+sudo mv ./build/include/boost /opt/android/include/
+sudo mv ./build/lib/* /opt/android/lib/android_armv5/debug/
+ls /opt/android/include/
+ls /opt/android/lib/android_armv5/debug/
 
-./build-android.sh --clean
+rm -rf build
+rm -rf boost_1_55_0
 
 nano -w ./build-android.sh
 ########
   { ./bjam -q                         \
+         target-os=linux              \
          toolset=$TOOLSET             \
          $cxxflags                    \
          variant=release              \
-         --layout=system              \
-         threading=multi              \
          link=static                  \
          runtime-link=static          \
+         threading=multi              \
+         --layout=system              \
+         --prefix="./../$BUILD_DIR/"  \
          -sZLIB_SOURCE="/home/babaei/Desktop/zlib-1.2.8" \
+         $LIBRARIES                   \
          install 2>&1                 \
          || { dump "ERROR: Failed to build boost for android!" ; exit 1 ; }
   } | tee -a $PROGDIR/build.log
 ########
 
-# 1.53.0
-./build-android.sh --boost=1.53.0 --toolchain=arm-linux-androideabi-4.8 --with-libraries=atomic,chrono,context,date_time,exception,filesystem,graph,graph_parallel,iostreams,locale,math,mpi,program_options,random,regex,serialization,signals,system,test,thread,timer,wave /opt/android/ndk
+# To get list of available boost binary libraries
+tar xjf boost_1_55_0.tar.bz2 && cd boost_1_55_0
+./bootstrap.sh --show-libraries
+cd .. && rm -rf boost_1_55_0
 
-# 1.55.0
+# 1.55.0 - without python library
 ./build-android.sh --boost=1.55.0 --toolchain=arm-linux-androideabi-4.8 --with-libraries=atomic,chrono,context,coroutine,date_time,exception,filesystem,graph,graph_parallel,iostreams,locale,log,math,mpi,program_options,random,regex,serialization,signals,system,test,thread,timer,wave /opt/android/ndk
-mv /home/babaei/Desktop/Boost-for-Android-master/build/lib/* /opt/android/lib/android_armv5/release/
+
+sudo mv ./build/lib/* /opt/android/lib/android_armv5/release/
+ls /opt/android/lib/android_armv5/release/
+
+rm -rf build
+rm -rf boost_1_55_0
+
+#######################################
 
 
 
-################# CPPDB
+################# CPPDB & SQLITE
 
-# Download https://github.com/lookout/sqlite-android
-unzip sqlite-android-master.zip
-cd unzip sqlite-android-master
+git clone https://github.com/lookout/sqlite-android.git
+cd sqlite-android
 
 nano -w Makefile
 ########
-SQLITE_VERSION  ?= 3080403
+SQLITE_VERSION  ?= 3080600
 
 SQLITE_URL      := http://www.sqlite.org/2014/$(SQLITE_BASENAME).zip
 ########
 
-unzip sqlite-amalgamation-3080403.zip
-cd sqlite-amalgamation-3080403
-cp sqlite3.h sqlite3ext.h /opt/android/include/
+wget http://sqlite.org/2014/sqlite-amalgamation-3080600.zip
+unzip sqlite-amalgamation-3080600.zip
+cd sqlite-amalgamation-3080600
+sudo cp -vr ./sqlite3.h ./sqlite3ext.h /opt/android/include/
 cd ..
-rm -rf sqlite-amalgamation-3080403
+rm -rf sqlite-amalgamation-3080600
+ls /opt/android/include/
 
-# NOTE: "APP_ABI := all" is also valid
+# NOTE: "APP_ABI := all" or a subset is also valid
 
 nano -w jni/Application.mk
 ########
 APP_OPTIM := debug
 APP_ABI := armeabi
+APP_PLATFORM := android-9
+
+NDK_TOOLCHAIN_VERSION := 4.8
 ########
 
 /opt/android/ndk/ndk-build
-cp obj/local/armeabi/libsqlite.a /opt/android/lib/android_armv5/debug/libsqlite3.a
+sudo cp -vr ./obj/local/armeabi/libsqlite.a /opt/android/lib/android_armv5/debug/libsqlite3.a
+ls /opt/android/lib/android_armv5/debug/
+
 rm -rf obj
 
 nano -w jni/Application.mk
 ########
 APP_OPTIM := release
-APP_ABI := armeabi
 ########
 
 /opt/android/ndk/ndk-build
-cp obj/local/armeabi/libsqlite.a /opt/android/lib/android_armv5/release/libsqlite3.a
+sudo cp -vr ./obj/local/armeabi/libsqlite.a /opt/android/lib/android_armv5/release/libsqlite3.a
+ls /opt/android/lib/android_armv5/release/
+
+rm -rf obj
+
 
 tar xvjf cppdb-0.3.1.tar.bz2
 cd cppdb-0.3.1
-cp -ivr cppdb /opt/android/include/
+sudo cp -vr ./cppdb /opt/android/include/
+ls /opt/android/include/
 
 wget https://raw.githubusercontent.com/taka-no-me/android-cmake/master/android.toolchain.cmake
 rm -rf /tmp/android-toolchain
-/opt/android/ndk/build/tools/make-standalone-toolchain.sh --platform=android-14 --install-dir=/tmp/android-toolchain --toolchain=arm-linux-androideabi-4.8
-cp /opt/android/include/sqlite3.h /opt/android/include/sqlite3ext.h /tmp/android-toolchain/sysroot/usr/include/
+/opt/android/ndk/build/tools/make-standalone-toolchain.sh --platform=android-9 --install-dir=/tmp/android-toolchain --toolchain=arm-linux-androideabi-4.8
+cp -vr /opt/android/include/sqlite3.h /opt/android/include/sqlite3ext.h /tmp/android-toolchain/sysroot/usr/include/
 
 nano -w CMakeLists.txt
 ########
@@ -160,19 +199,404 @@ nano -w CMakeLists.txt
 ########
 
 mkdir _debug && cd _debug
-cp /opt/android/lib/android_armv5/debug/libsqlite3.a /tmp/android-toolchain/sysroot/usr/lib/
+cp -vr /opt/android/lib/android_armv5/debug/libsqlite3.a /tmp/android-toolchain/sysroot/usr/lib/
 cmake -DCMAKE_TOOLCHAIN_FILE=../android.toolchain.cmake -DANDROID_STANDALONE_TOOLCHAIN=/tmp/android-toolchain -DANDROID_ABI=armeabi -DCMAKE_BUILD_TYPE=Debug -DCMAKE_LIBRARY_PATH=/opt/android/lib/android_armv5/debug/ -DCMAKE_INCLUDE_PATH=/opt/android/include/ -DSQLITE_BACKEND_INTERNAL=OFF -DDISABLE_MYSQL=ON -DDISABLE_PQ=ON -DDISABLE_ODBC=ON ../
 make -j5
-cp ../libs/armeabi/libcppdb.a ../libs/armeabi/libcppdb_sqlite3.a /opt/android/lib/android_armv5/debug/
+sudo cp -vr ../libs/armeabi/libcppdb.a ../libs/armeabi/libcppdb_sqlite3.a /opt/android/lib/android_armv5/debug/
+ls /opt/android/lib/android_armv5/debug/
 cd ..
 
 rm -rf /tmp/android-toolchain/sysroot/usr/lib/libsqlite3.a
 rm -rf ./libs
+rm -rf _debug
 
 mkdir _release && cd _release
-cp /opt/android/lib/android_armv5/release/libsqlite3.a /tmp/android-toolchain/sysroot/usr/lib/
+cp -vr /opt/android/lib/android_armv5/release/libsqlite3.a /tmp/android-toolchain/sysroot/usr/lib/
 cmake -DCMAKE_TOOLCHAIN_FILE=../android.toolchain.cmake -DANDROID_STANDALONE_TOOLCHAIN=/tmp/android-toolchain -DANDROID_ABI=armeabi -DCMAKE_BUILD_TYPE=Release -DCMAKE_LIBRARY_PATH=/opt/android/lib/android_armv5/debug/ -DCMAKE_INCLUDE_PATH=/opt/android/include/ -DSQLITE_BACKEND_INTERNAL=OFF -DDISABLE_MYSQL=ON -DDISABLE_PQ=ON -DDISABLE_ODBC=ON ../
 make -j5
-cp ../libs/armeabi/libcppdb.a ../libs/armeabi/libcppdb_sqlite3.a /opt/android/lib/android_armv5/release/
+sudo cp -vr ../libs/armeabi/libcppdb.a ../libs/armeabi/libcppdb_sqlite3.a /opt/android/lib/android_armv5/release/
+ls /opt/android/lib/android_armv5/release/
+cd ..
+
+rm -rf /tmp/android-toolchain/sysroot/usr/lib/libsqlite3.a
+rm -rf ./libs
+rm -rf _release
+
 #######################################
 
+
+
+################# CRYPTO++ - METHOD 01
+
+wget https://raw.githubusercontent.com/noloader/cryptopp-5.6.2-android-18/master/setenv-android.sh
+
+nano -w setenv-android.sh
+########
+_ANDROID_API="android-9"
+.
+.
+.
+# For the Android STL.
+
+# Error checking
+if [ ! -d "$ANDROID_NDK_ROOT/sources/cxx-stl/gnu-libstdc++/4.8/include/" ]; then
+  echo "Error: STLport headers is not valid. Please edit this script."
+  # exit 1
+fi
+
+# If more than one library is using STLport, all libraries ***must*** use the shared version
+# STLPORT_LIB=libgnustl_static.a
+STLPORT_LIB=libgnustl_shared.so
+
+
+# Error checking
+if [ ! -e "$ANDROID_NDK_ROOT/sources/cxx-stl/gnu-libstdc++/4.8/libs/armeabi/$STLPORT_LIB" ]; then
+  echo "Error: STLport library is not valid. Please edit this script."
+  # exit 1
+fi
+
+export ANDROID_STL_INC="$ANDROID_NDK_ROOT/sources/cxx-stl/gnu-libstdc++/4.8/include/"
+export ANDROID_STL_LIB="$ANDROID_NDK_ROOT/sources/cxx-stl/gnu-libstdc++/4.8/libs/armeabi/$STLPORT_LIB"
+########
+
+export ANDROID_NDK_ROOT="/opt/android/ndk"
+export ANDROID_EABI="arm-linux-androideabi-4.8"
+. ./setenv-android.sh
+printenv | grep ANDROID | sort
+echo $PATH
+
+unzip cryptopp562.zip -d ./cryptopp562
+cd cryptopp562
+
+rm GNUmakefile
+rm config.h
+rm wait.cpp
+rm wait.h
+
+wget https://raw.githubusercontent.com/noloader/cryptopp-5.6.2-android-18/master/GNUmakefile
+wget https://raw.githubusercontent.com/noloader/cryptopp-5.6.2-android-18/master/config.h
+wget https://raw.githubusercontent.com/noloader/cryptopp-5.6.2-android-18/master/wait.cpp
+wget https://raw.githubusercontent.com/noloader/cryptopp-5.6.2-android-18/master/wait.h
+
+sudo mkdir /opt/android/include/cryptopp
+sudo cp -vr *.h /opt/android/include/cryptopp/
+ls /opt/android/include/
+
+sudo cp -vr /opt/android/ndk/sources/cxx-stl/gnu-libstdc++/4.8/libs/armeabi/include/bits/* /opt/android/ndk/sources/cxx-stl/gnu-libstdc++/4.8/include/bits/
+
+
+nano -w GNUmakefile
+########
+CXXFLAGS = -fexceptions -frtti -g3
+########
+
+make static -j5
+sudo cp -vr ./libcryptopp.a /opt/android/lib/android_armv5/debug/
+ls /opt/android/lib/android_armv5/debug/
+
+
+nano -w GNUmakefile
+########
+CXXFLAGS = -fexceptions -frtti -DNDEBUG -O2
+########
+
+make clean
+make static -j5
+readelf -h libcryptopp.a | grep -i 'class\|machine' 
+ls -l libcryptopp.a
+arm-linux-androideabi-strip --strip-debug libcryptopp.a
+arm-linux-androideabi-strip --strip-all libcryptopp.a
+ls -l libcryptopp.a
+
+sudo cp -vr ./libcryptopp.a /opt/android/lib/android_armv5/release/
+ls /opt/android/lib/android_armv5/release/
+
+
+sudo rm /opt/android/ndk/sources/cxx-stl/gnu-libstdc++/4.8/include/bits/atomic_word.h
+sudo rm /opt/android/ndk/sources/cxx-stl/gnu-libstdc++/4.8/include/bits/basic_file.h
+sudo rm /opt/android/ndk/sources/cxx-stl/gnu-libstdc++/4.8/include/bits/c++allocator.h
+sudo rm /opt/android/ndk/sources/cxx-stl/gnu-libstdc++/4.8/include/bits/c++config.h
+sudo rm /opt/android/ndk/sources/cxx-stl/gnu-libstdc++/4.8/include/bits/c++io.h
+sudo rm /opt/android/ndk/sources/cxx-stl/gnu-libstdc++/4.8/include/bits/c++locale.h
+sudo rm /opt/android/ndk/sources/cxx-stl/gnu-libstdc++/4.8/include/bits/cpu_defines.h
+sudo rm /opt/android/ndk/sources/cxx-stl/gnu-libstdc++/4.8/include/bits/ctype_base.h
+sudo rm /opt/android/ndk/sources/cxx-stl/gnu-libstdc++/4.8/include/bits/ctype_inline.h
+sudo rm /opt/android/ndk/sources/cxx-stl/gnu-libstdc++/4.8/include/bits/cxxabi_tweaks.h
+sudo rm /opt/android/ndk/sources/cxx-stl/gnu-libstdc++/4.8/include/bits/error_constants.h
+sudo rm /opt/android/ndk/sources/cxx-stl/gnu-libstdc++/4.8/include/bits/extc++.h
+sudo rm /opt/android/ndk/sources/cxx-stl/gnu-libstdc++/4.8/include/bits/gthr-default.h
+sudo rm /opt/android/ndk/sources/cxx-stl/gnu-libstdc++/4.8/include/bits/gthr-posix.h
+sudo rm /opt/android/ndk/sources/cxx-stl/gnu-libstdc++/4.8/include/bits/gthr-single.h
+sudo rm /opt/android/ndk/sources/cxx-stl/gnu-libstdc++/4.8/include/bits/gthr.h
+sudo rm /opt/android/ndk/sources/cxx-stl/gnu-libstdc++/4.8/include/bits/messages_members.h
+sudo rm /opt/android/ndk/sources/cxx-stl/gnu-libstdc++/4.8/include/bits/opt_random.h
+sudo rm /opt/android/ndk/sources/cxx-stl/gnu-libstdc++/4.8/include/bits/os_defines.h
+sudo rm /opt/android/ndk/sources/cxx-stl/gnu-libstdc++/4.8/include/bits/stdc++.h
+sudo rm /opt/android/ndk/sources/cxx-stl/gnu-libstdc++/4.8/include/bits/stdtr1c++.h
+sudo rm /opt/android/ndk/sources/cxx-stl/gnu-libstdc++/4.8/include/bits/time_members.h
+
+#######################################
+
+
+
+################# CRYPTO++ - METHOD 02
+
+unzip cryptopp562.zip -d cryptopp562
+cd cryptopp562
+
+rm GNUmakefile
+rm config.h
+rm wait.cpp
+rm wait.h
+
+wget https://raw.githubusercontent.com/noloader/cryptopp-5.6.2-android-18/master/config.h
+wget https://raw.githubusercontent.com/noloader/cryptopp-5.6.2-android-18/master/wait.cpp
+wget https://raw.githubusercontent.com/noloader/cryptopp-5.6.2-android-18/master/wait.h
+
+mkdir /opt/android/include/cryptopp
+sudo cp -vr ./*h /opt/android/include/cryptopp
+ls /opt/android/include/
+
+#for f in *.cpp; do echo "\$(LOCAL_PATH)/../$f:"; echo -e "\t\$(MAKE) -C \$(@:%/$f=%) $f"; done
+for f in *.cpp; do echo -e "\t../$f \\"; done
+
+mkdir ./jni
+nano -w ./jni/Android.mk
+########
+LOCAL_PATH := $(call my-dir)
+
+include $(CLEAR_VARS)
+
+LOCAL_MODULE            := cryptopp
+LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/..
+LOCAL_SRC_FILES         := \
+	../3way.cpp \
+	../adler32.cpp \
+	../algebra.cpp \
+	../algparam.cpp \
+	../arc4.cpp \
+	../asn.cpp \
+	../authenc.cpp \
+	../base32.cpp \
+	../base64.cpp \
+	../basecode.cpp \
+	../bench.cpp \
+	../bench2.cpp \
+	../bfinit.cpp \
+	../blowfish.cpp \
+	../blumshub.cpp \
+	../camellia.cpp \
+	../cast.cpp \
+	../casts.cpp \
+	../cbcmac.cpp \
+	../ccm.cpp \
+	../channels.cpp \
+	../cmac.cpp \
+	../cpu.cpp \
+	../crc.cpp \
+	../cryptlib.cpp \
+	../cryptlib_bds.cpp \
+	../datatest.cpp \
+	../default.cpp \
+	../des.cpp \
+	../dessp.cpp \
+	../dh.cpp \
+	../dh2.cpp \
+	../dll.cpp \
+	../dlltest.cpp \
+	../dsa.cpp \
+	../eax.cpp \
+	../ec2n.cpp \
+	../eccrypto.cpp \
+	../ecp.cpp \
+	../elgamal.cpp \
+	../emsa2.cpp \
+	../eprecomp.cpp \
+	../esign.cpp \
+	../files.cpp \
+	../filters.cpp \
+	../fips140.cpp \
+	../fipsalgt.cpp \
+	../fipstest.cpp \
+	../gcm.cpp \
+	../gf256.cpp \
+	../gf2_32.cpp \
+	../gf2n.cpp \
+	../gfpcrypt.cpp \
+	../gost.cpp \
+	../gzip.cpp \
+	../hex.cpp \
+	../hmac.cpp \
+	../hrtimer.cpp \
+	../ida.cpp \
+	../idea.cpp \
+	../integer.cpp \
+	../iterhash.cpp \
+	../luc.cpp \
+	../mars.cpp \
+	../marss.cpp \
+	../md2.cpp \
+	../md4.cpp \
+	../md5.cpp \
+	../misc.cpp \
+	../modes.cpp \
+	../mqueue.cpp \
+	../mqv.cpp \
+	../nbtheory.cpp \
+	../network.cpp \
+	../oaep.cpp \
+	../osrng.cpp \
+	../panama.cpp \
+	../pch.cpp \
+	../pkcspad.cpp \
+	../polynomi.cpp \
+	../pssr.cpp \
+	../pubkey.cpp \
+	../queue.cpp \
+	../rabin.cpp \
+	../randpool.cpp \
+	../rc2.cpp \
+	../rc5.cpp \
+	../rc6.cpp \
+	../rdtables.cpp \
+	../regtest.cpp \
+	../rijndael.cpp \
+	../ripemd.cpp \
+	../rng.cpp \
+	../rsa.cpp \
+	../rw.cpp \
+	../safer.cpp \
+	../salsa.cpp \
+	../seal.cpp \
+	../seed.cpp \
+	../serpent.cpp \
+	../sha.cpp \
+	../sha3.cpp \
+	../shacal2.cpp \
+	../shark.cpp \
+	../sharkbox.cpp \
+	../simple.cpp \
+	../skipjack.cpp \
+	../socketft.cpp \
+	../sosemanuk.cpp \
+	../square.cpp \
+	../squaretb.cpp \
+	../strciphr.cpp \
+	../tea.cpp \
+	../test.cpp \
+	../tftables.cpp \
+	../tiger.cpp \
+	../tigertab.cpp \
+	../trdlocal.cpp \
+	../ttmac.cpp \
+	../twofish.cpp \
+	../validat1.cpp \
+	../validat2.cpp \
+	../validat3.cpp \
+	../vmac.cpp \
+	../wait.cpp \
+	../wake.cpp \
+	../whrlpool.cpp \
+	../winpipes.cpp \
+	../xtr.cpp \
+	../xtrcrypt.cpp \
+	../zdeflate.cpp \
+	../zinflate.cpp \
+	../zlib.cpp \
+
+include $(BUILD_STATIC_LIBRARY)
+########
+
+nano -w ./jni/Application.mk
+########
+APP_MODULES := cryptopp
+
+APP_CFLAGS += -fexceptions -frtti
+APP_CXXFLAGS += -fexceptions -frtti
+APP_CPPFLAGS += -fexceptions -frtti
+
+APP_OPTIM := debug
+APP_STL := gnustl_shared
+APP_ABI := armeabi
+APP_PLATFORM := android-9
+
+NDK_TOOLCHAIN_VERSION := 4.8
+########
+
+/opt/android/ndk/ndk-build
+sudo cp -vr ./obj/local/armeabi/libcryptopp.a /opt/android/lib/android_armv5/debug/
+ls /opt/android/lib/android_armv5/debug/
+
+rm -rf ./obj
+
+nano -w ./jni/Application.mk
+########
+APP_OPTIM := release
+########
+
+/opt/android/ndk/ndk-build
+sudo cp -vr ./obj/local/armeabi/libcryptopp.a /opt/android/lib/android_armv5/release/
+ls /opt/android/lib/android_armv5/release/
+
+rm -rf ./obj
+
+#######################################
+
+
+
+################# LIBB64
+
+unzip libb64-1.2.src.zip
+cd libb64-1.2/src
+rm -rf Makefile
+
+sudo cp -vr ../include/b64 /opt/android/include/
+ls /opt/android/include/
+
+mkdir ./jni
+
+nano -w ./jni/Android.mk
+########
+LOCAL_PATH := $(call my-dir)
+
+include $(CLEAR_VARS)
+
+LOCAL_MODULE    := b64
+LOCAL_SRC_FILES := ../cdecode.c ../cencode.c
+LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/../../include
+
+include $(BUILD_STATIC_LIBRARY)
+########
+
+nano -w ./jni/Application.mk
+########
+APP_MODULES := b64
+
+APP_CFLAGS += -Werror -pedantic
+APP_CFLAGS += -I../include
+
+APP_OPTIM := debug
+APP_ABI := armeabi
+APP_PLATFORM := android-9
+
+NDK_TOOLCHAIN_VERSION := 4.8
+########
+
+/opt/android/ndk/ndk-build
+sudo cp -vr ./obj/local/armeabi/libb64.a /opt/android/lib/android_armv5/debug/
+ls /opt/android/lib/android_armv5/debug/
+
+rm -rf obj
+
+nano -w ./jni/Application.mk
+########
+APP_OPTIM := release
+########
+
+/opt/android/ndk/ndk-build
+sudo cp -vr ./obj/local/armeabi/libb64.a /opt/android/lib/android_armv5/release/
+ls /opt/android/lib/android_armv5/release/
+
+rm -rf obj
+
+#######################################
