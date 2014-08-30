@@ -6,14 +6,30 @@
 #include <QtQml/QQmlApplicationEngine>
 
 namespace MiniPos {
+class Screen;
 class UiEngine;
 }
+
+class MiniPos::Screen : public QObject {
+    Q_OBJECT
+
+    Q_ENUMS( Type )
+
+public:
+    enum Type {
+        PC,
+        Phone,
+        Tablet7,
+        Tablet10
+    };
+};
 
 class MiniPos::UiEngine : public QQmlApplicationEngine
 {
     Q_OBJECT
 
     Q_PROPERTY ( QString EmptyLangString READ GetEmptyLangString NOTIFY signal_LanguageChanged )
+    Q_PROPERTY ( MiniPos::Screen::Type TargetScreenType READ GetTargetScreenType NOTIFY signal_TargetScreenTypeChanged )
 
 private:
     struct Impl;
@@ -27,9 +43,11 @@ public:
 
 signals:
     void signal_LanguageChanged();
+    void signal_TargetScreenTypeChanged(MiniPos::Screen::Type);
 
 public:
     QString GetEmptyLangString() const;
+    MiniPos::Screen::Type GetTargetScreenType();
 
 public:
     Q_INVOKABLE bool notify(const QString &title, const QString &text, const int id = 0) const;

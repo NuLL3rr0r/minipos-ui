@@ -1,6 +1,7 @@
 #include <QtCore/QDebug>
 #include <QtCore/QVariant>
 #include <QtQml/QQmlContext>
+#include <QtQml/QtQml>
 #include <QtWidgets/QSystemTrayIcon>
 #if defined ( _WIN32 )
 #include <windows.h>
@@ -12,6 +13,7 @@
 #endif // defined ( Q_OS_ANDROID )
 #include "Pool.hpp"
 #include "Pos.hpp"
+#include "RestApi.hpp"
 
 using namespace MiniPos;
 
@@ -20,7 +22,7 @@ struct UiEngine::Impl
 public:
 #if !defined ( Q_OS_ANDROID )
     typedef std::unique_ptr<QSystemTrayIcon> QSystemTrayIcon_t;
-#endif // defined ( Q_OS_ANDROID )
+#endif // !defined ( Q_OS_ANDROID )
 
 private:
     UiEngine *m_parent;
@@ -37,6 +39,7 @@ public:
 public:
     void OnHeadSetStateChanged(const Pos::HeadSetState &state);
 
+public:
     void Initialize();
     void InitializeEvents();
 };
@@ -45,8 +48,6 @@ UiEngine::UiEngine(QObject *parent) :
     QQmlApplicationEngine(parent),
     m_pimpl(std::make_unique<UiEngine::Impl>(this))
 {
-    this->rootContext()->setContextProperty("uiEngine", this);
-
     m_pimpl->Initialize();
 }
 
@@ -54,8 +55,6 @@ UiEngine::UiEngine(const QUrl &url, QObject *parent) :
     QQmlApplicationEngine(url, parent),
     m_pimpl(std::make_unique<UiEngine::Impl>(this))
 {
-    this->rootContext()->setContextProperty("uiEngine", this);
-
     m_pimpl->Initialize();
 }
 
@@ -63,8 +62,6 @@ UiEngine::UiEngine(const QString &filePath, QObject *parent) :
     QQmlApplicationEngine(filePath, parent),
     m_pimpl(std::make_unique<UiEngine::Impl>(this))
 {
-    this->rootContext()->setContextProperty("uiEngine", this);
-
     m_pimpl->Initialize();
 }
 
@@ -73,6 +70,22 @@ UiEngine::~UiEngine() = default;
 QString UiEngine::GetEmptyLangString() const
 {
     return "";
+}
+
+Screen::Type UiEngine::GetTargetScreenType()
+{
+#if defined ( Q_OS_ANDROID )
+    QString screenType(Pool::Android()->GetScreenType());
+    if (screenType == "phone") {
+        return Screen::Phone;
+    } else if (screenType == "7-inch-tablet") {
+        return Screen::Tablet7;
+    } else if (screenType == "10-inch-tablet") {
+        return Screen::Tablet10;
+    }
+#endif // defined ( Q_OS_ANDROID )
+
+    return Screen::PC;
 }
 
 bool UiEngine::notify(const QString &title, const QString &text, const int id) const
@@ -155,8 +168,11 @@ void UiEngine::Impl::OnHeadSetStateChanged(const Pos::HeadSetState &state)
 
 void UiEngine::Impl::Initialize()
 {
+    qmlRegisterType<Screen>("ScreenTypes", 1, 0, "ScreenType");
+
     QQmlContext *context = m_parent->rootContext();
-    context->setContextProperty("uiEngine", m_parent);
+    context->setContextProperty("UiEngine", m_parent);
+    context->setContextProperty("RestApi", Pool::RestApi());
     context->setContextProperty("FontPath", "qrc:///fnt/main.ttf");
 
     InitializeEvents();
