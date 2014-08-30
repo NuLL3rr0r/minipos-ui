@@ -37,8 +37,9 @@ public:
     bool IsInitialized();
 
 public:
+    QString GetScreenType();
     bool Notify(const QString &title, const QString &text, const int id = 0);
-    bool ShowToast(const QString &text, const int duration = 6000);
+    bool ShowToast(const QString &text, const int duration = 8000);
 };
 
 

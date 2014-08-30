@@ -63,14 +63,14 @@ Android::Android() :
 
 Android::~Android() = default;
 
-bool Android::ExceptionCheck()
-{
-    return m_pimpl->AndroidJniEnvironment->ExceptionCheck();
-}
-
 void Android::OnHeadSetStateChanged(OnHeadSetStateChangedHandler_t handler)
 {
     OnHeadSetStateChangedHandler = handler;
+}
+
+bool Android::ExceptionCheck()
+{
+    return m_pimpl->AndroidJniEnvironment->ExceptionCheck();
 }
 
 void Android::ExceptionClear()
@@ -106,6 +106,17 @@ bool Android::IsInitialized()
                 JAVA_CLASS, "isInitialized", "()Z");
 }
 
+QString Android::GetScreenType()
+{
+    ExceptionClear();
+
+    QAndroidJniObject ret = QAndroidJniObject::callStaticObjectMethod(
+                JAVA_CLASS,
+                "getScreenType",
+                "()Ljava/lang/CharSequence;");
+
+    return ret.toString();
+}
 
 bool Android::Notify(const QString &title, const QString &text, const int id)
 {
