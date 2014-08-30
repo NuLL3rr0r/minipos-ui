@@ -8,14 +8,14 @@ ApplicationWindow {
     visible: true;
     width: 640;
     height: 480;
-    title: qsTr("mini POS Card Reader") + uiEngine.EmptyLangString;
+    title: qsTr("mini POS Card Reader") + UiEngine.EmptyLangString;
 
     signal signal_englishMenuItemPressed();
     signal signal_farsiMenuItemPressed();
 
     function menuPressed(title) {
-        uiEngine.notify(qsTr("mini POS Card Reader") + uiEngine.EmptyLangString, title);
-        uiEngine.showToast(title);
+        UiEngine.notify(qsTr("mini POS Card Reader") + UiEngine.EmptyLangString, title);
+        UiEngine.showToast(title);
     }
 
     function showToast(text, duration) {
@@ -26,51 +26,51 @@ ApplicationWindow {
 
     menuBar: MenuBar {
         Menu {
-            title: qsTr("mini POS") + uiEngine.EmptyLangString;
+            title: qsTr("mini POS") + UiEngine.EmptyLangString;
             MenuItem {
-                text: qsTr("Purchase") + uiEngine.EmptyLangString;
+                text: qsTr("Purchase") + UiEngine.EmptyLangString;
                 onTriggered:{
                     view.currentIndex = 1;
-                    menuPressed(qsTr("Purchase") + uiEngine.EmptyLangString);
+                    menuPressed(qsTr("Purchase") + UiEngine.EmptyLangString);
                 }
             }
             MenuItem {
-                text: qsTr("Balance") + uiEngine.EmptyLangString;
+                text: qsTr("Balance") + UiEngine.EmptyLangString;
                 onTriggered: {
                     view.currentIndex = 2;
-                    menuPressed(qsTr("Balance") + uiEngine.EmptyLangString);
+                    menuPressed(qsTr("Balance") + UiEngine.EmptyLangString);
                 }
             }
             MenuItem {
-                text: qsTr("Bill Payment") + uiEngine.EmptyLangString;
+                text: qsTr("Bill Payment") + UiEngine.EmptyLangString;
                 onTriggered: {
                     view.currentIndex = 3;
-                    menuPressed(qsTr("Bill Payment") + uiEngine.EmptyLangString);
+                    menuPressed(qsTr("Bill Payment") + UiEngine.EmptyLangString);
                 }
             }
             MenuItem {
-                text: qsTr("Special Payment") + uiEngine.EmptyLangString;
+                text: qsTr("Special Payment") + UiEngine.EmptyLangString;
                 onTriggered: {
                     view.currentIndex = 4;
-                    menuPressed(qsTr("Special Payment") + uiEngine.EmptyLangString);
+                    menuPressed(qsTr("Special Payment") + UiEngine.EmptyLangString);
                 }
             }
             MenuItem {
-                text: qsTr("Charging Mobile") + uiEngine.EmptyLangString;
+                text: qsTr("Charging Mobile") + UiEngine.EmptyLangString;
                 onTriggered: {
                     view.currentIndex = 5;
-                    menuPressed(qsTr("Charging Mobile") + uiEngine.EmptyLangString);
+                    menuPressed(qsTr("Charging Mobile") + UiEngine.EmptyLangString);
                 }
             }
             Menu {
-                title: qsTr("Language") + uiEngine.EmptyLangString;
+                title: qsTr("Language") + UiEngine.EmptyLangString;
 
                 MenuItem {
                     id: englishMenuItem;
                     text: "English";
                     onTriggered: {
                         signal_englishMenuItemPressed();
-                        uiEngine.showToast("The language is changed to English!");
+                        UiEngine.showToast("The language is changed to English!");
                     }
                 }
                 MenuItem {
@@ -78,12 +78,12 @@ ApplicationWindow {
                     text: "فارسی"
                     onTriggered: {
                         signal_farsiMenuItemPressed();
-                        uiEngine.showToast("زبان به فارسی تغییر یافت!");
+                        UiEngine.showToast("زبان به فارسی تغییر یافت!");
                     }
                 }
             }
             MenuItem {
-                text: qsTr("Exit") + uiEngine.EmptyLangString;
+                text: qsTr("Exit") + UiEngine.EmptyLangString;
                 onTriggered: Qt.quit();
             }
         }
@@ -99,7 +99,7 @@ ApplicationWindow {
                 height: view.height;
                 color: "#FFFEF0";
                 Text  {
-                    text: qsTr("Welcome") + uiEngine.EmptyLangString;
+                    text: qsTr("Welcome") + UiEngine.EmptyLangString;
                     font.bold: true;
                     anchors.centerIn: parent;
                 }
@@ -109,7 +109,7 @@ ApplicationWindow {
                 height: view.height;
                 color: "#F0FFF7";
                 Text  {
-                    text: qsTr("Purchase") + uiEngine.EmptyLangString;
+                    text: qsTr("Purchase") + UiEngine.EmptyLangString;
                     font.bold: true;
                     anchors.centerIn: parent;
                 }
@@ -119,7 +119,7 @@ ApplicationWindow {
                 height: view.height;
                 color: "#F4F0FF";
                 Text  {
-                    text: qsTr("Balance") + uiEngine.EmptyLangString;
+                    text: qsTr("Balance") + UiEngine.EmptyLangString;
                     font.bold: true;
                     anchors.centerIn: parent;
                 }
@@ -129,7 +129,7 @@ ApplicationWindow {
                 height: view.height;
                 color: "#FFFEF0";
                 Text  {
-                    text: qsTr("Bill Payment") + uiEngine.EmptyLangString;
+                    text: qsTr("Bill Payment") + UiEngine.EmptyLangString;
                     font.bold: true;
                     anchors.centerIn: parent;
                 }
@@ -139,7 +139,7 @@ ApplicationWindow {
                 height: view.height;
                 color: "#F0FFF7";
                 Text  {
-                    text: qsTr("Special Payment") + uiEngine.EmptyLangString;
+                    text: qsTr("Special Payment") + UiEngine.EmptyLangString;
                     font.bold: true;
                     anchors.centerIn: parent;
                 }
@@ -149,7 +149,7 @@ ApplicationWindow {
                 height: view.height;
                 color: "#F4F0FF";
                 Text  {
-                    text: qsTr("Charging Mobile") + uiEngine.EmptyLangString;
+                    text: qsTr("Charging Mobile") + UiEngine.EmptyLangString;
                     font.bold: true;
                     anchors.centerIn: parent;
                 }
