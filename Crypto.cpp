@@ -15,11 +15,11 @@
 #include "make_unique.hpp"
 #include "Crypto.hpp"
 
-#define     UNKNOWN_ERROR           "Ertebat::Crypto unknown error!"
+#define     UNKNOWN_ERROR           "MiniPos::Crypto unknown error!"
 
 using namespace std;
 using namespace CryptoPP;
-using namespace Ertebat;
+using namespace MiniPos;
 
 struct Crypto::Impl
 {

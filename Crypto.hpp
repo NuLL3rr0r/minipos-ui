@@ -1,16 +1,16 @@
-#ifndef ERTEBAT_CRYPTO_HPP
-#define ERTEBAT_CRYPTO_HPP
+#ifndef MINIPOS_CRYPTO_HPP
+#define MINIPOS_CRYPTO_HPP
 
 
 #include <memory>
 #include <string>
 #include <cstddef>
 
-namespace Ertebat {
+namespace MiniPos {
     class Crypto;
 }
 
-class Ertebat::Crypto
+class MiniPos::Crypto
 {
 public:
     typedef unsigned char Byte_t;
@@ -58,5 +58,5 @@ public:
 };
 
 
-#endif /* ERTEBAT_CRYPTO_HPP */
+#endif /* MINIPOS_CRYPTO_HPP */
 
