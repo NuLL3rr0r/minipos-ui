@@ -57,7 +57,7 @@ void Application::SetupUi()
 
     m_pimpl->UiEngine =
             std::make_unique<MiniPos::UiEngine>();
-    m_pimpl->UiEngine->load(QUrl(QStringLiteral("qrc:///ui/main.qml")));
+    m_pimpl->UiEngine->load(QUrl(QStringLiteral("qrc:///ui/Main.qml")));
 
     QObject *uiRootObject = m_pimpl->UiEngine->rootObjects().first();
 

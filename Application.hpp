@@ -25,10 +25,6 @@ signals:
 
 public slots:
 
-public slots:
-    void OnEnglishMenuItemPressed();
-    void OnFarsiMenuItemPressed();
-
 public:
     void InitializeDatabase();
     void SetupUi();
