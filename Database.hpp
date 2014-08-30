@@ -12,10 +12,6 @@ class Database;
 
 class MiniPos::Database
 {
-public:
-    enum class Table : unsigned char {
-    };
-
 private:
     struct Impl;
     std::unique_ptr<Impl> m_pimpl;
