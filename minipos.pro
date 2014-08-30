@@ -1,8 +1,8 @@
 TEMPLATE = app
 
 
-QT += core gui qml quick widgets
-QT -= multimedia multimediawidgets network sql testlib webkit
+QT += core gui network qml quick widgets
+QT -= multimedia multimediawidgets sql testlib webkit
 android {
     QT += androidextras
 }
@@ -14,6 +14,7 @@ android {
 win32 {
     DEFINES += SHARED_LINK_DEPENDENCIES
 }
+DEFINES += "BUFFERSIZE=16777216"
 
 
 QMAKE_CXXFLAGS += -std=c++1y
@@ -55,24 +56,32 @@ win32 {
         LIBS += -L$$PWD/dependencies/lib/mingw482_32/release
     }
 }
-LIBS += -lboost_date_time -lboost_filesystem -lboost_system -lcppdb -lcppdb_sqlite3 -lsqlite3
+LIBS += -lb64 -lboost_date_time -lboost_filesystem -lboost_system -lcppdb -lcppdb_sqlite3 -lcryptopp -lsqlite3
 
 
 HEADERS += \
     make_unique.hpp \
     Application.hpp \
+    Crypto.hpp \
     Database.hpp \
+    Http.hpp \
+    HttpStatus.hpp \
     Log.hpp \
     Pool.hpp \
     Pos.hpp \
+    RestApi.hpp \
     UiEngine.hpp
 SOURCES += \
     main.cpp \
     Application.cpp \
+    Crypto.cpp \
     Database.cpp \
+    Http.cpp \
+    HttpStatus.cpp \
     Log.cpp \
     Pool.cpp \
     Pos.cpp \
+    RestApi.cpp \
     UiEngine.cpp
 android {
     HEADERS += \
@@ -82,7 +91,7 @@ android {
 }
 lupdate_only {
     SOURCES += \
-        $$PWD/deployment/resources/ui/main.qml
+        $$PWD/deployment/resources/ui/Main.qml
 }
 
 
@@ -101,7 +110,10 @@ android {
         deployment/android/res/drawable-hdpi/icon.png \
         deployment/android/res/drawable-ldpi/icon.png \
         deployment/android/res/drawable-mdpi/icon.png \
+        deployment/android/res/values/screen.xml \
         deployment/android/res/values/strings.xml \
+        deployment/android/res/values-sw600dp/screen.xml \
+        deployment/android/res/values-sw720dp/screen.xml \
         deployment/android/src/com/rahpooyanco/minipos/Android.java
 }
 
