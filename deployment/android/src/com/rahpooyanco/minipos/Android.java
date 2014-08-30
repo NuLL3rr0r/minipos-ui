@@ -50,6 +50,11 @@ public class Android extends org.qtproject.qt5.android.bindings.QtActivity
         return s_instance != null ? true : false;
     }
 
+    public static CharSequence getScreenType()
+    {
+        return s_instance.getResources().getString(R.string.screen_type);
+    }
+
     public static boolean notify(final CharSequence title, final CharSequence text, final int id)
     {
         Log.v(TAG, "notify");
