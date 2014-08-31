@@ -1,3 +1,8 @@
+/**
+ * @author  Mohammad S. Babaei <info@babaei.net>
+ */
+
+
 #include <algorithm>
 #include <stdexcept>
 #if defined ( _WIN32 )

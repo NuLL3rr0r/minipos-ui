@@ -1,3 +1,8 @@
+/**
+ * @author  Mohammad S. Babaei <info@babaei.net>
+ */
+
+
 #include <memory>
 #include <QtCore/QDebug>
 #include <QtCore/QString>

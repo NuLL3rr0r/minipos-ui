@@ -1,3 +1,8 @@
+/**
+ * @author  Mohammad S. Babaei <info@babaei.net>
+ */
+
+
 #include <mutex>
 #include <cassert>
 #include <QtCore/QDir>

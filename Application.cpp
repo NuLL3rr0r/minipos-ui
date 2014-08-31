@@ -1,3 +1,8 @@
+/**
+ * @author  Mohammad S. Babaei <info@babaei.net>
+ */
+
+
 #include <QtCore/QDebug>
 #include <QtGui/QFont>
 #include <QtGui/QFontDatabase>

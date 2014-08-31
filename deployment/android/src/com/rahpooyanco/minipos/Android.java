@@ -1,3 +1,8 @@
+/**
+ * @author  Mohammad S. Babaei <info@babaei.net>
+ */
+
+
 package com.rahpooyanco.minipos;
 
 import android.app.Notification;

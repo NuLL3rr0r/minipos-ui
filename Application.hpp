@@ -1,3 +1,8 @@
+/**
+ * @author  Mohammad S. Babaei <info@babaei.net>
+ */
+
+
 #ifndef MINIPOS_APPLICATION_HPP
 #define MINIPOS_APPLICATION_HPP
 

@@ -1,3 +1,8 @@
+/**
+ * @author  Mohammad S. Babaei <info@babaei.net>
+ */
+
+
 #include <unordered_map>
 #include <boost/format.hpp>
 #include "make_unique.hpp"

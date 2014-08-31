@@ -1,3 +1,8 @@
+/**
+ * @author  Mohammad S. Babaei <info@babaei.net>
+ */
+
+
 #ifndef MINIPOS_ANDROID_HPP
 #define MINIPOS_ANDROID_HPP
 

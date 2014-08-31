@@ -1,3 +1,8 @@
+/**
+ * @author  Mohammad S. Babaei <info@babaei.net>
+ */
+
+
 #ifndef MAKE_UNIQUE_HPP
 #define MAKE_UNIQUE_HPP
 

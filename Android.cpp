@@ -1,3 +1,8 @@
+/**
+ * @author  Mohammad S. Babaei <info@babaei.net>
+ */
+
+
 #include <cassert>
 #include <jni.h>
 #include <QtAndroidExtras/QAndroidJniEnvironment>

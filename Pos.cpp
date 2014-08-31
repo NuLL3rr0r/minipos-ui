@@ -1,3 +1,8 @@
+/**
+ * @author  Mohammad S. Babaei <info@babaei.net>
+ */
+
+
 #include "Pos.hpp"
 #include "make_unique.hpp"
 #include <QObject>          // This is necessary for typedef Q_OS_ANDROID.

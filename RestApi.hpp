@@ -1,3 +1,8 @@
+/**
+ * @author  Mohammad S. Babaei <info@babaei.net>
+ */
+
+
 #ifndef MINIPOS_REST_API_HPP
 #define MINIPOS_REST_API_HPP
 

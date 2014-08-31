@@ -1,3 +1,8 @@
+/**
+ * @author  Mohammad S. Babaei <info@babaei.net>
+ */
+
+
 #ifndef MINIPOS_HTTP_STATUS_HPP
 #define MINIPOS_HTTP_STATUS_HPP
 
