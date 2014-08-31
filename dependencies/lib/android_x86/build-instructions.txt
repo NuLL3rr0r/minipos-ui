@@ -57,7 +57,7 @@ if [ -n "${AndroidSourcesDetected}" ]; then # Overwrite CXXPATH if we are buildi
 fi
 ########
 
-export MAKEFLAGS="-j5"
+export MAKEFLAGS="-j9"
 
 mkdir -p /opt/android/include
 mkdir -p /opt/android/lib/android_x86/debug
@@ -210,7 +210,7 @@ nano -w CMakeLists.txt
 mkdir _debug && cd _debug
 cp -vr /opt/android/lib/android_x86/debug/libsqlite3.a /tmp/android-toolchain/sysroot/usr/lib/
 cmake -DCMAKE_TOOLCHAIN_FILE=../android.toolchain.cmake -DANDROID_STANDALONE_TOOLCHAIN=/tmp/android-toolchain -DANDROID_ABI=x86 -DCMAKE_BUILD_TYPE=Debug -DCMAKE_LIBRARY_PATH=/opt/android/lib/android_x86/debug/ -DCMAKE_INCLUDE_PATH=/opt/android/include/ -DSQLITE_BACKEND_INTERNAL=OFF -DDISABLE_MYSQL=ON -DDISABLE_PQ=ON -DDISABLE_ODBC=ON ../
-make -j5
+make -j9
 sudo cp -vr ../libs/x86/libcppdb.a ../libs/x86/libcppdb_sqlite3.a /opt/android/lib/android_x86/debug/
 ls /opt/android/lib/android_x86/debug/
 cd ..
@@ -222,7 +222,7 @@ rm -rf _debug
 mkdir _release && cd _release
 cp -vr /opt/android/lib/android_x86/release/libsqlite3.a /tmp/android-toolchain/sysroot/usr/lib/
 cmake -DCMAKE_TOOLCHAIN_FILE=../android.toolchain.cmake -DANDROID_STANDALONE_TOOLCHAIN=/tmp/android-toolchain -DANDROID_ABI=x86 -DCMAKE_BUILD_TYPE=Release -DCMAKE_LIBRARY_PATH=/opt/android/lib/android_x86/debug/ -DCMAKE_INCLUDE_PATH=/opt/android/include/ -DSQLITE_BACKEND_INTERNAL=OFF -DDISABLE_MYSQL=ON -DDISABLE_PQ=ON -DDISABLE_ODBC=ON ../
-make -j5
+make -j9
 sudo cp -vr ../libs/x86/libcppdb.a ../libs/x86/libcppdb_sqlite3.a /opt/android/lib/android_x86/release/
 ls /opt/android/lib/android_x86/release/
 cd ..
@@ -299,7 +299,7 @@ nano -w GNUmakefile
 CXXFLAGS = -fexceptions -frtti -g3
 ########
 
-make static -j5
+make static -j9
 sudo cp -vr ./libcryptopp.a /opt/android/lib/android_x86/debug/
 ls /opt/android/lib/android_x86/debug/
 
@@ -310,7 +310,7 @@ CXXFLAGS = -fexceptions -frtti -DNDEBUG -O2
 ########
 
 make clean
-make static -j5
+make static -j9
 readelf -h libcryptopp.a | grep -i 'class\|machine' 
 ls -l libcryptopp.a
 arm-linux-androideabi-strip --strip-debug libcryptopp.a
