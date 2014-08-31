@@ -59,7 +59,7 @@ win32 {
         LIBS += -L$$PWD/dependencies/lib/mingw482_32/release
     }
 }
-LIBS += -lb64 -lboost_date_time -lboost_filesystem -lboost_system -lcppdb -lcppdb_sqlite3 -lcryptopp -lsqlite3
+LIBS += -lb64 -lboost_date_time -lboost_filesystem -lboost_system -lcppdb -lcppdb_sqlite3 -lcryptopp -ldl_c_iso8583 -lsqlite3
 
 
 HEADERS += \
