@@ -47,7 +47,7 @@ CONFIG -= qt
 
 4. Do the following:
     * qmake
-    * mingw32-make all -j5
+    * mingw32-make all -j9
 
 5. Copy the following files to the appropriate directory:
 debug/sqlite3.dll
@@ -64,7 +64,7 @@ cmake -G "MinGW Makefiles" -D CMAKE_BUILD_TYPE=Debug -DCMAKE_LIBRARY_PATH=../sql
 cmake -G "MinGW Makefiles" -D CMAKE_BUILD_TYPE=Release -DCMAKE_LIBRARY_PATH=../sqlite3/release -DCMAKE_INCLUDE_PATH=../sqlite3/ -DSQLITE_BACKEND_INTERNAL=OFF -DDISABLE_MYSQL=ON -DDISABLE_PQ=ON -DDISABLE_ODBC=ON ..\
 
 9. For each build:
-mingw32-make -j5
+mingw32-make -j9
 
 10. Copy the following files to your own corresponding directory:
 libcppdb.dll
@@ -94,7 +94,7 @@ LIBS += -lws2_32
 
 5. Do the following:
     * qmake
-    * mingw32-make all -j5
+    * mingw32-make all -j9
 
 6. Copy the following files to your own corresponding directory:
 debug/cryptopp.dll
@@ -119,9 +119,43 @@ CONFIG -= qt
 
 4. Do the following:
     * qmake
-    * mingw32-make all -j5
+    * mingw32-make all -j9
 
 5. Copy the following files to your own corresponding directory:
 debug/b64.dll
 release/b64.dll
 include/b64/*
+
+
+
+################# OSCAR SANDERSON'S C ISO8583 LIBRARY
+
+1. Get the latest version of the library from http://www.oscarsanderson.com/iso-8583/ (e.g. v0.0.4 (16th July 2008)) and extract it.
+
+2. Do as follows:
+    * cd DL_C_ISO8583_v0_0_4_160708_AllFiles
+    * mkdir dl_c_iso8583
+    * cd dl_c_iso8583
+    * copy ..\dl_c_common_v0_0_2\*.c .\
+    * copy ..\dl_c_common_v0_0_2\*.h .\
+    * copy ..\dl_c_iso8583_v0_0_3\*.c .\
+    * copy ..\dl_c_iso8583_v0_0_3\*.h .\
+    * qmake -project
+
+3. In dl_c_iso8583.pro do the following changes:
+TEMPLATE = lib
+TARGET = dl_c_iso8583
+INCLUDEPATH += .
+CONFIG -= qt
+
+4. Do the following:
+    * qmake
+    * mingw32-make all -j9
+
+5. Copy the following files to your own corresponding directory:
+debug/dl_c_iso8583.dll
+release/dl_c_iso8583.dll
+./*.h (to dl_c_iso8583 folder)
+
+
+
