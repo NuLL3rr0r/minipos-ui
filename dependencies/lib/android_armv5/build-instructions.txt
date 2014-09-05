@@ -19,7 +19,7 @@ tar xvJf zlib-1.2.8.tar.xz
 #-sICU_PATH="/home/babaei/Desktop/icu" \
 
 git clone https://github.com/MysticTreeGames/Boost-for-Android.git
-cp -vr boost_1_55_0.tar.bz2 ~/Desktop/Boost-for-Android/
+cp -vr boost_1_55_0.tar.bz2 ~/Desktop/Boost-for-Android-master/
 cd ~/Desktop/Boost-for-Android
 ./build-android.sh --help
 ls /opt/android/ndk/toolchains/
@@ -45,8 +45,11 @@ arm-linux-androideabi-g++
 <compileflags>-D__ARM_ARCH_5T__
 <compileflags>-D__ARM_ARCH_5E__
 <compileflags>-D__ARM_ARCH_5TE__
+<compileflags>-D__ARM_ARCH_7__
+<compileflags>-D__ARM_ARCH_7A__
+#<compileflags>-D__ARM_NEON__
 <compileflags>-Wno-psabi
-<compileflags>-march=armv5te
+<compileflags>-march=armv7-a
 <compileflags>-mtune=xscale
 <compileflags>-msoft-float
 <compileflags>-mthumb
@@ -54,7 +57,7 @@ arm-linux-androideabi-g++
 <compileflags>-fomit-frame-pointer
 <compileflags>-fno-strict-aliasing
 <compileflags>-finline-limit=64
-<compileflags>-I$(AndroidNDKRoot)/platforms/android-9/arch-arm/usr/include
+<compileflags>-I$(AndroidNDKRoot)/platforms/android-16/arch-arm/usr/include
 <compileflags>-Wa,--noexecstack
 <compileflags>-DANDROID
 <compileflags>-D__ANDROID__
@@ -106,8 +109,8 @@ esac
 export MAKEFLAGS="-j5"
 
 mkdir -p /opt/android/include
-mkdir -p /opt/android/lib/android_armv5/debug
-mkdir -p /opt/android/lib/android_armv5/release
+mkdir -p /opt/android/lib/android_armv7/debug
+mkdir -p /opt/android/lib/android_armv7/release
 
 nano -w ./build-android.sh
 ########
@@ -137,9 +140,9 @@ cd .. && rm -rf boost_1_55_0
 ./build-android.sh --boost=1.55.0 --toolchain=arm-linux-androideabi-4.8 --with-libraries=atomic,chrono,context,coroutine,date_time,exception,filesystem,graph,graph_parallel,iostreams,locale,log,math,mpi,program_options,random,regex,serialization,signals,system,test,thread,timer,wave /opt/android/ndk
 
 sudo mv ./build/include/boost /opt/android/include/
-sudo mv ./build/lib/* /opt/android/lib/android_armv5/debug/
+sudo mv ./build/lib/* /opt/android/lib/android_armv7/debug/
 ls /opt/android/include/
-ls /opt/android/lib/android_armv5/debug/
+ls /opt/android/lib/android_armv7/debug/
 
 rm -rf build
 rm -rf boost_1_55_0
@@ -171,8 +174,8 @@ cd .. && rm -rf boost_1_55_0
 # 1.55.0 - without python library
 ./build-android.sh --boost=1.55.0 --toolchain=arm-linux-androideabi-4.8 --with-libraries=atomic,chrono,context,coroutine,date_time,exception,filesystem,graph,graph_parallel,iostreams,locale,log,math,mpi,program_options,random,regex,serialization,signals,system,test,thread,timer,wave /opt/android/ndk
 
-sudo mv ./build/lib/* /opt/android/lib/android_armv5/release/
-ls /opt/android/lib/android_armv5/release/
+sudo mv ./build/lib/* /opt/android/lib/android_armv7/release/
+ls /opt/android/lib/android_armv7/release/
 
 rm -rf build
 rm -rf boost_1_55_0
@@ -206,15 +209,15 @@ ls /opt/android/include/
 nano -w jni/Application.mk
 ########
 APP_OPTIM := debug
-APP_ABI := armeabi
-APP_PLATFORM := android-9
+APP_ABI := armeabi-v7a
+APP_PLATFORM := android-16
 
 NDK_TOOLCHAIN_VERSION := 4.8
 ########
 
 /opt/android/ndk/ndk-build
-sudo cp -vr ./obj/local/armeabi/libsqlite.a /opt/android/lib/android_armv5/debug/libsqlite3.a
-ls /opt/android/lib/android_armv5/debug/
+sudo cp -vr ./obj/local/armeabi-v7a/libsqlite.a /opt/android/lib/android_armv7/debug/libsqlite3.a
+ls /opt/android/lib/android_armv7/debug/
 
 rm -rf obj
 
@@ -224,8 +227,8 @@ APP_OPTIM := release
 ########
 
 /opt/android/ndk/ndk-build
-sudo cp -vr ./obj/local/armeabi/libsqlite.a /opt/android/lib/android_armv5/release/libsqlite3.a
-ls /opt/android/lib/android_armv5/release/
+sudo cp -vr ./obj/local/armeabi-v7a/libsqlite.a /opt/android/lib/android_armv7/release/libsqlite3.a
+ls /opt/android/lib/android_armv7/release/
 
 rm -rf obj
 
@@ -237,7 +240,7 @@ ls /opt/android/include/
 
 wget https://raw.githubusercontent.com/taka-no-me/android-cmake/master/android.toolchain.cmake
 rm -rf /tmp/android-toolchain
-/opt/android/ndk/build/tools/make-standalone-toolchain.sh --platform=android-9 --install-dir=/tmp/android-toolchain --toolchain=arm-linux-androideabi-4.8
+/opt/android/ndk/build/tools/make-standalone-toolchain.sh --platform=android-16 --install-dir=/tmp/android-toolchain --toolchain=arm-linux-androideabi-4.8
 cp -vr /opt/android/include/sqlite3.h /opt/android/include/sqlite3ext.h /tmp/android-toolchain/sysroot/usr/include/
 
 nano -w CMakeLists.txt
@@ -252,11 +255,11 @@ nano -w CMakeLists.txt
 ########
 
 mkdir _debug && cd _debug
-cp -vr /opt/android/lib/android_armv5/debug/libsqlite3.a /tmp/android-toolchain/sysroot/usr/lib/
-cmake -DCMAKE_TOOLCHAIN_FILE=../android.toolchain.cmake -DANDROID_STANDALONE_TOOLCHAIN=/tmp/android-toolchain -DANDROID_ABI=armeabi -DCMAKE_BUILD_TYPE=Debug -DCMAKE_LIBRARY_PATH=/opt/android/lib/android_armv5/debug/ -DCMAKE_INCLUDE_PATH=/opt/android/include/ -DSQLITE_BACKEND_INTERNAL=OFF -DDISABLE_MYSQL=ON -DDISABLE_PQ=ON -DDISABLE_ODBC=ON ../
+cp -vr /opt/android/lib/android_armv7/debug/libsqlite3.a /tmp/android-toolchain/sysroot/usr/lib/
+cmake -DCMAKE_TOOLCHAIN_FILE=../android.toolchain.cmake -DANDROID_STANDALONE_TOOLCHAIN=/tmp/android-toolchain -DANDROID_ABI=armeabi-v7a -DCMAKE_BUILD_TYPE=Debug -DCMAKE_LIBRARY_PATH=/opt/android/lib/android_armv7/debug/ -DCMAKE_INCLUDE_PATH=/opt/android/include/ -DSQLITE_BACKEND_INTERNAL=OFF -DDISABLE_MYSQL=ON -DDISABLE_PQ=ON -DDISABLE_ODBC=ON ../
 make -j5
-sudo cp -vr ../libs/armeabi/libcppdb.a ../libs/armeabi/libcppdb_sqlite3.a /opt/android/lib/android_armv5/debug/
-ls /opt/android/lib/android_armv5/debug/
+sudo cp -vr ../libs/armeabi-v7a/libcppdb.a ../libs/armeabi-v7a/libcppdb_sqlite3.a /opt/android/lib/android_armv7/debug/
+ls /opt/android/lib/android_armv7/debug/
 cd ..
 
 rm -rf /tmp/android-toolchain/sysroot/usr/lib/libsqlite3.a
@@ -264,15 +267,15 @@ rm -rf ./libs
 rm -rf _debug
 
 mkdir _release && cd _release
-cp -vr /opt/android/lib/android_armv5/release/libsqlite3.a /tmp/android-toolchain/sysroot/usr/lib/
-cmake -DCMAKE_TOOLCHAIN_FILE=../android.toolchain.cmake -DANDROID_STANDALONE_TOOLCHAIN=/tmp/android-toolchain -DANDROID_ABI=armeabi -DCMAKE_BUILD_TYPE=Release -DCMAKE_LIBRARY_PATH=/opt/android/lib/android_armv5/debug/ -DCMAKE_INCLUDE_PATH=/opt/android/include/ -DSQLITE_BACKEND_INTERNAL=OFF -DDISABLE_MYSQL=ON -DDISABLE_PQ=ON -DDISABLE_ODBC=ON ../
+cp -vr /opt/android/lib/android_armv7/release/libsqlite3.a /tmp/android-toolchain/sysroot/usr/lib/
+cmake -DCMAKE_TOOLCHAIN_FILE=../android.toolchain.cmake -DANDROID_STANDALONE_TOOLCHAIN=/tmp/android-toolchain -DANDROID_ABI=armeabi-v7a -DCMAKE_BUILD_TYPE=Release -DCMAKE_LIBRARY_PATH=/opt/android/lib/android_armv7/debug/ -DCMAKE_INCLUDE_PATH=/opt/android/include/ -DSQLITE_BACKEND_INTERNAL=OFF -DDISABLE_MYSQL=ON -DDISABLE_PQ=ON -DDISABLE_ODBC=ON ../
 make -j5
-sudo cp -vr ../libs/armeabi/libcppdb.a ../libs/armeabi/libcppdb_sqlite3.a /opt/android/lib/android_armv5/release/
-ls /opt/android/lib/android_armv5/release/
+sudo cp -vr ../libs/armeabi-v7a/libcppdb.a ../libs/armeabi-v7a/libcppdb_sqlite3.a /opt/android/lib/android_armv7/release/
+ls /opt/android/lib/android_armv7/release/
 cd ..
 
-rm -rf /tmp/android-toolchain/sysroot/usr/lib/libsqlite3.a
 rm -rf ./libs
+rm -rf /tmp/android-toolchain/sysroot/usr/lib/libsqlite3.a
 rm -rf _release
 
 #######################################
@@ -285,7 +288,7 @@ wget https://raw.githubusercontent.com/noloader/cryptopp-5.6.2-android-18/master
 
 nano -w setenv-android.sh
 ########
-_ANDROID_API="android-9"
+_ANDROID_API="android-16"
 .
 .
 .
@@ -303,13 +306,13 @@ STLPORT_LIB=libgnustl_shared.so
 
 
 # Error checking
-if [ ! -e "$ANDROID_NDK_ROOT/sources/cxx-stl/gnu-libstdc++/4.8/libs/armeabi/$STLPORT_LIB" ]; then
+if [ ! -e "$ANDROID_NDK_ROOT/sources/cxx-stl/gnu-libstdc++/4.8/libs/armeabi-v7a/$STLPORT_LIB" ]; then
   echo "Error: STLport library is not valid. Please edit this script."
   # exit 1
 fi
 
 export ANDROID_STL_INC="$ANDROID_NDK_ROOT/sources/cxx-stl/gnu-libstdc++/4.8/include/"
-export ANDROID_STL_LIB="$ANDROID_NDK_ROOT/sources/cxx-stl/gnu-libstdc++/4.8/libs/armeabi/$STLPORT_LIB"
+export ANDROID_STL_LIB="$ANDROID_NDK_ROOT/sources/cxx-stl/gnu-libstdc++/4.8/libs/armeabi-v7a/$STLPORT_LIB"
 ########
 
 export ANDROID_NDK_ROOT="/opt/android/ndk"
@@ -335,7 +338,7 @@ sudo mkdir /opt/android/include/cryptopp
 sudo cp -vr *.h /opt/android/include/cryptopp/
 ls /opt/android/include/
 
-sudo cp -vr /opt/android/ndk/sources/cxx-stl/gnu-libstdc++/4.8/libs/armeabi/include/bits/* /opt/android/ndk/sources/cxx-stl/gnu-libstdc++/4.8/include/bits/
+sudo cp -vr /opt/android/ndk/sources/cxx-stl/gnu-libstdc++/4.8/libs/armeabi-v7a/include/bits/* /opt/android/ndk/sources/cxx-stl/gnu-libstdc++/4.8/include/bits/
 
 
 nano -w GNUmakefile
@@ -344,8 +347,8 @@ CXXFLAGS = -fexceptions -frtti -g3
 ########
 
 make static -j5
-sudo cp -vr ./libcryptopp.a /opt/android/lib/android_armv5/debug/
-ls /opt/android/lib/android_armv5/debug/
+sudo cp -vr ./libcryptopp.a /opt/android/lib/android_armv7/debug/
+ls /opt/android/lib/android_armv7/debug/
 
 
 nano -w GNUmakefile
@@ -361,8 +364,8 @@ arm-linux-androideabi-strip --strip-debug libcryptopp.a
 arm-linux-androideabi-strip --strip-all libcryptopp.a
 ls -l libcryptopp.a
 
-sudo cp -vr ./libcryptopp.a /opt/android/lib/android_armv5/release/
-ls /opt/android/lib/android_armv5/release/
+sudo cp -vr ./libcryptopp.a /opt/android/lib/android_armv7/release/
+ls /opt/android/lib/android_armv7/release/
 
 
 sudo rm /opt/android/ndk/sources/cxx-stl/gnu-libstdc++/4.8/include/bits/atomic_word.h
@@ -570,15 +573,15 @@ APP_CPPFLAGS += -fexceptions -frtti
 
 APP_OPTIM := debug
 APP_STL := gnustl_shared
-APP_ABI := armeabi
-APP_PLATFORM := android-9
+APP_ABI := armeabi-v7a
+APP_PLATFORM := android-16
 
 NDK_TOOLCHAIN_VERSION := 4.8
 ########
 
 /opt/android/ndk/ndk-build
-sudo cp -vr ./obj/local/armeabi/libcryptopp.a /opt/android/lib/android_armv5/debug/
-ls /opt/android/lib/android_armv5/debug/
+sudo cp -vr ./obj/local/armeabi-v7a/libcryptopp.a /opt/android/lib/android_armv7/debug/
+ls /opt/android/lib/android_armv7/debug/
 
 rm -rf ./obj
 
@@ -588,8 +591,8 @@ APP_OPTIM := release
 ########
 
 /opt/android/ndk/ndk-build
-sudo cp -vr ./obj/local/armeabi/libcryptopp.a /opt/android/lib/android_armv5/release/
-ls /opt/android/lib/android_armv5/release/
+sudo cp -vr ./obj/local/armeabi-v7a/libcryptopp.a /opt/android/lib/android_armv7/release/
+ls /opt/android/lib/android_armv7/release/
 
 rm -rf ./obj
 
@@ -629,15 +632,15 @@ APP_CFLAGS += -Werror -pedantic
 APP_CFLAGS += -I../include
 
 APP_OPTIM := debug
-APP_ABI := armeabi
-APP_PLATFORM := android-9
+APP_ABI := armeabi-v7a
+APP_PLATFORM := android-16
 
 NDK_TOOLCHAIN_VERSION := 4.8
 ########
 
 /opt/android/ndk/ndk-build
-sudo cp -vr ./obj/local/armeabi/libb64.a /opt/android/lib/android_armv5/debug/
-ls /opt/android/lib/android_armv5/debug/
+sudo cp -vr ./obj/local/armeabi-v7a/libb64.a /opt/android/lib/android_armv7/debug/
+ls /opt/android/lib/android_armv7/debug/
 
 rm -rf obj
 
@@ -647,8 +650,8 @@ APP_OPTIM := release
 ########
 
 /opt/android/ndk/ndk-build
-sudo cp -vr ./obj/local/armeabi/libb64.a /opt/android/lib/android_armv5/release/
-ls /opt/android/lib/android_armv5/release/
+sudo cp -vr ./obj/local/armeabi-v7a/libb64.a /opt/android/lib/android_armv7/release/
+ls /opt/android/lib/android_armv7/release/
 
 rm -rf obj
 
