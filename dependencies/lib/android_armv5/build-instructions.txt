@@ -19,10 +19,60 @@ tar xvJf zlib-1.2.8.tar.xz
 #-sICU_PATH="/home/babaei/Desktop/icu" \
 
 git clone https://github.com/MysticTreeGames/Boost-for-Android.git
-cp -vr boost_1_55_0.tar.bz2 ~/Desktop/Boost-for-Android-master/
+cp -vr boost_1_55_0.tar.bz2 ~/Desktop/Boost-for-Android/
 cd ~/Desktop/Boost-for-Android
 ./build-android.sh --help
 ls /opt/android/ndk/toolchains/
+
+# Replace this one with all the other compilers
+nano -w ./configs/user-config-boost-1_55_0.jam
+########
+import os ;
+local AndroidNDKRoot = [ os.environ AndroidNDKRoot ] ;
+
+# --------------------------------------------------------------------
+using gcc : androidR8e
+:
+arm-linux-androideabi-g++
+:
+<archiver>arm-linux-androideabi-ar
+<compileflags>-fexceptions
+<compileflags>-frtti
+<compileflags>-fpic
+<compileflags>-ffunction-sections
+<compileflags>-funwind-tables
+<compileflags>-D__ARM_ARCH_5__
+<compileflags>-D__ARM_ARCH_5T__
+<compileflags>-D__ARM_ARCH_5E__
+<compileflags>-D__ARM_ARCH_5TE__
+<compileflags>-Wno-psabi
+<compileflags>-march=armv5te
+<compileflags>-mtune=xscale
+<compileflags>-msoft-float
+<compileflags>-mthumb
+<compileflags>-Os
+<compileflags>-fomit-frame-pointer
+<compileflags>-fno-strict-aliasing
+<compileflags>-finline-limit=64
+<compileflags>-I$(AndroidNDKRoot)/platforms/android-9/arch-arm/usr/include
+<compileflags>-Wa,--noexecstack
+<compileflags>-DANDROID
+<compileflags>-D__ANDROID__
+<compileflags>-DNDEBUG
+<compileflags>-O2
+<compileflags>-g
+<compileflags>-I$(AndroidNDKRoot)/sources/cxx-stl/gnu-libstdc++/4.8/include
+<compileflags>-I$(AndroidNDKRoot)/sources/cxx-stl/gnu-libstdc++/4.8/libs/armeabi/include
+# @Moss - Above are the 'oficial' android flags
+<architecture>arm
+<compileflags>-fvisibility=hidden
+<compileflags>-fvisibility-inlines-hidden
+<compileflags>-fdata-sections
+<cxxflags>-D__arm__
+<cxxflags>-D_REENTRANT
+<cxxflags>-D_GLIBCXX__PTHREADS
+;
+########
 
 nano -w ./build-android.sh
 ########
@@ -53,7 +103,7 @@ case "$NDK_RN" in
 esac
 ########
 
-export MAKEFLAGS="-j9"
+export MAKEFLAGS="-j5"
 
 mkdir -p /opt/android/include
 mkdir -p /opt/android/lib/android_armv5/debug
@@ -204,7 +254,7 @@ nano -w CMakeLists.txt
 mkdir _debug && cd _debug
 cp -vr /opt/android/lib/android_armv5/debug/libsqlite3.a /tmp/android-toolchain/sysroot/usr/lib/
 cmake -DCMAKE_TOOLCHAIN_FILE=../android.toolchain.cmake -DANDROID_STANDALONE_TOOLCHAIN=/tmp/android-toolchain -DANDROID_ABI=armeabi -DCMAKE_BUILD_TYPE=Debug -DCMAKE_LIBRARY_PATH=/opt/android/lib/android_armv5/debug/ -DCMAKE_INCLUDE_PATH=/opt/android/include/ -DSQLITE_BACKEND_INTERNAL=OFF -DDISABLE_MYSQL=ON -DDISABLE_PQ=ON -DDISABLE_ODBC=ON ../
-make -j9
+make -j5
 sudo cp -vr ../libs/armeabi/libcppdb.a ../libs/armeabi/libcppdb_sqlite3.a /opt/android/lib/android_armv5/debug/
 ls /opt/android/lib/android_armv5/debug/
 cd ..
@@ -216,7 +266,7 @@ rm -rf _debug
 mkdir _release && cd _release
 cp -vr /opt/android/lib/android_armv5/release/libsqlite3.a /tmp/android-toolchain/sysroot/usr/lib/
 cmake -DCMAKE_TOOLCHAIN_FILE=../android.toolchain.cmake -DANDROID_STANDALONE_TOOLCHAIN=/tmp/android-toolchain -DANDROID_ABI=armeabi -DCMAKE_BUILD_TYPE=Release -DCMAKE_LIBRARY_PATH=/opt/android/lib/android_armv5/debug/ -DCMAKE_INCLUDE_PATH=/opt/android/include/ -DSQLITE_BACKEND_INTERNAL=OFF -DDISABLE_MYSQL=ON -DDISABLE_PQ=ON -DDISABLE_ODBC=ON ../
-make -j9
+make -j5
 sudo cp -vr ../libs/armeabi/libcppdb.a ../libs/armeabi/libcppdb_sqlite3.a /opt/android/lib/android_armv5/release/
 ls /opt/android/lib/android_armv5/release/
 cd ..
@@ -293,7 +343,7 @@ nano -w GNUmakefile
 CXXFLAGS = -fexceptions -frtti -g3
 ########
 
-make static -j9
+make static -j5
 sudo cp -vr ./libcryptopp.a /opt/android/lib/android_armv5/debug/
 ls /opt/android/lib/android_armv5/debug/
 
@@ -304,7 +354,7 @@ CXXFLAGS = -fexceptions -frtti -DNDEBUG -O2
 ########
 
 make clean
-make static -j9
+make static -j5
 readelf -h libcryptopp.a | grep -i 'class\|machine' 
 ls -l libcryptopp.a
 arm-linux-androideabi-strip --strip-debug libcryptopp.a
@@ -603,85 +653,3 @@ ls /opt/android/lib/android_armv5/release/
 rm -rf obj
 
 #######################################
-
-
-
-################# OSCAR SANDERSON'S C ISO8583 LIBRARY
-
-First, fetch the latest version of the library from http://www.oscarsanderson.com/iso-8583/ (e.g. v0.0.4 (16th July 2008)).
-
-tar xvf dl_c_iso8583_v0_0_4_160708_allfiles.tar
-cd DL_C_ISO8583_v0_0_4_160708_AllFiles
-mkdir dl_c_iso8583
-cd dl_c_iso8583
-cp -vr ../dl_c_common_v0_0_2/*.c ../dl_c_common_v0_0_2/*.h ../dl_c_iso8583_v0_0_3/*.c ../dl_c_iso8583_v0_0_3/*.h ./
-
-sudo mkdir /opt/android/include/dl_c_iso8583
-sudo cp -vr ./*.h /opt/android/include/dl_c_iso8583/
-ls /opt/android/include/dl_c_iso8583/
-
-mkdir ./jni
-
-for f in *.c; do echo -e "\t../$f \\"; done
-
-
-nano -w ./jni/Android.mk
-########
-LOCAL_PATH := $(call my-dir)
-
-include $(CLEAR_VARS)
-
-LOCAL_MODULE            := dl_c_iso8583
-LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/..
-LOCAL_SRC_FILES         := \
-	../dl_iso8583.c \
-	../dl_iso8583_common.c \
-	../dl_iso8583_defs_1987.c \
-	../dl_iso8583_defs_1993.c \
-	../dl_iso8583_fields.c \
-	../dl_mem.c \
-	../dl_output.c \
-	../dl_str.c \
-	../dl_time.c \
-	../dl_timer.c
-LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)
-
-include $(BUILD_STATIC_LIBRARY)
-########
-
-nano -w ./jni/Application.mk
-########
-APP_MODULES := dl_c_iso8583
-
-APP_CFLAGS += -pedantic
-APP_CFLAGS += -I.
-
-APP_OPTIM := debug
-APP_ABI := armeabi
-APP_PLATFORM := android-9
-
-NDK_TOOLCHAIN_VERSION := 4.8
-########
-
-/opt/android/ndk/ndk-build
-sudo cp -vr ./obj/local/armeabi/libdl_c_iso8583.a /opt/android/lib/android_armv5/debug/
-ls /opt/android/lib/android_armv5/debug/
-
-rm -rf obj
-
-nano -w ./jni/Application.mk
-########
-APP_OPTIM := release
-########
-
-/opt/android/ndk/ndk-build
-sudo cp -vr ./obj/local/armeabi/libdl_c_iso8583.a /opt/android/lib/android_armv5/release/
-ls /opt/android/lib/android_armv5/release/
-
-rm -rf obj
-
-#######################################
-
-
-
-
