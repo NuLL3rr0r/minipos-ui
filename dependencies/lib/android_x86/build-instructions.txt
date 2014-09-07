@@ -649,3 +649,84 @@ ls /opt/android/lib/android_x86/release/
 rm -rf obj
 
 #######################################
+
+
+
+################# OSCAR SANDERSON'S C ISO8583 LIBRARY
+
+First, fetch the latest version of the library from http://www.oscarsanderson.com/iso-8583/ (e.g. v0.0.4 (16th July 2008)).
+
+tar xvf dl_c_iso8583_v0_0_4_160708_allfiles.tar
+cd DL_C_ISO8583_v0_0_4_160708_AllFiles
+mkdir dl_c_iso8583
+cd dl_c_iso8583
+cp -vr ../dl_c_common_v0_0_2/*.c ../dl_c_common_v0_0_2/*.h ../dl_c_iso8583_v0_0_3/*.c ../dl_c_iso8583_v0_0_3/*.h ./
+
+sudo mkdir /opt/android/include/dl_c_iso8583
+sudo cp -vr ./*.h /opt/android/include/dl_c_iso8583/
+ls /opt/android/include/dl_c_iso8583/
+
+mkdir ./jni
+
+for f in *.c; do echo -e "\t../$f \\"; done
+
+
+nano -w ./jni/Android.mk
+########
+LOCAL_PATH := $(call my-dir)
+
+include $(CLEAR_VARS)
+
+LOCAL_MODULE := dl_c_iso8583
+LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/..
+LOCAL_SRC_FILES := \
+ ../dl_iso8583.c \
+ ../dl_iso8583_common.c \
+ ../dl_iso8583_defs_1987.c \
+ ../dl_iso8583_defs_1993.c \
+ ../dl_iso8583_fields.c \
+ ../dl_mem.c \
+ ../dl_output.c \
+ ../dl_str.c \
+ ../dl_time.c \
+ ../dl_timer.c
+LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)
+
+include $(BUILD_STATIC_LIBRARY)
+########
+
+nano -w ./jni/Application.mk
+########
+APP_MODULES := dl_c_iso8583
+
+APP_CFLAGS += -pedantic
+APP_CFLAGS += -I.
+
+APP_OPTIM := debug
+APP_ABI := x86
+APP_PLATFORM := android-16
+
+NDK_TOOLCHAIN_VERSION := 4.8
+########
+
+/opt/android/ndk/ndk-build
+sudo cp -vr ./obj/local/x86/libdl_c_iso8583.a /opt/android/lib/android_x86/debug/
+ls /opt/android/lib/android_x86/debug/
+
+rm -rf obj
+
+nano -w ./jni/Application.mk
+########
+APP_OPTIM := release
+########
+
+/opt/android/ndk/ndk-build
+sudo cp -vr ./obj/local/x86/libdl_c_iso8583.a /opt/android/lib/android_x86/release/
+ls /opt/android/lib/android_x86/release/
+
+rm -rf obj
+
+#######################################
+
+
+
