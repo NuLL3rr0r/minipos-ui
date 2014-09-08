@@ -19,7 +19,7 @@ tar xvJf zlib-1.2.8.tar.xz
 #-sICU_PATH="/home/babaei/Desktop/icu" \
 
 git clone https://github.com/MysticTreeGames/Boost-for-Android.git
-cp -vr boost_1_55_0.tar.bz2 ~/Desktop/Boost-for-Android/
+cp -vr boost_1_55_0.tar.bz2 ~/Desktop/Boost-for-Android-master/
 cd ~/Desktop/Boost-for-Android
 ./build-android.sh --help
 ls /opt/android/ndk/toolchains/
@@ -45,6 +45,9 @@ arm-linux-androideabi-g++
 <compileflags>-D__ARM_ARCH_5T__
 <compileflags>-D__ARM_ARCH_5E__
 <compileflags>-D__ARM_ARCH_5TE__
+<compileflags>-D__ARM_ARCH_7__
+<compileflags>-D__ARM_ARCH_7A__
+#<compileflags>-D__ARM_NEON__
 <compileflags>-Wno-psabi
 <compileflags>-march=armv7-a
 <compileflags>-mtune=xscale
