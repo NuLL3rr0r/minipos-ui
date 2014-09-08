@@ -19,7 +19,7 @@ tar xvJf zlib-1.2.8.tar.xz
 #-sICU_PATH="/home/babaei/Desktop/icu" \
 
 git clone https://github.com/MysticTreeGames/Boost-for-Android.git
-cp -vr boost_1_55_0.tar.bz2 ~/Desktop/Boost-for-Android-master/
+cp -vr boost_1_55_0.tar.bz2 ~/Desktop/Boost-for-Android/
 cd ~/Desktop/Boost-for-Android
 ./build-android.sh --help
 ls /opt/android/ndk/toolchains/
